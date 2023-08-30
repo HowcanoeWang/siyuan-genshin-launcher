@@ -12,7 +12,7 @@
         body {
             height: 100%;
             margin: 0;
-            background: #1e1e1e;
+            background: #fefefe;
             font-size: 12px;
             font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", "Hiragino Sans GB", "Microsoft Yahei", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
         }
@@ -22,13 +22,22 @@
 <div id="bg" style="width: 100%;display: flex;justify-content: space-around;height: 100%;">
     <img style="width:36vh;align-self: center;" src="icon.png"/>
 </div>
-<div style="position: absolute;bottom: 0;width: 100%;">
-    <div style="position: absolute;height: 1px;background-color: #3b3e43;width: 100%;top:0"></div>
-    <div id="progress"
-         style="position: absolute;height: 1px;background-color: #d23f31;transition: width 50ms cubic-bezier(0, 0, 0.2, 1);top:0"></div>
-    <div id="details"
-         style="color: #9aa0a6;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;padding: 8px;"></div>
+<div style="position:absolute; bottom: 40px; width:80%; left:10%; text-align: center; font-size: 14px; color: #6c6a6d; font-weight: bold;">
+    <p style="margin:5px;">抵制不良软件，拒绝盗版软件，注意自我保护，谨防受骗上当，适度美化益脑，沉迷插件伤身，合理安排时间，享受健康生活。</p>
+    <p style="margin:5px;">备案号：滇ICP备14007358号-1&nbsp;&nbsp;&nbsp;开源协议：AGPL-3.0 license&nbsp;&nbsp;&nbsp;</p>
+    <p style="margin:5px;">著作权人：云南链滴科技有限公司</p>
+    <p style="margin-top:5px; margin-bottom: 20px;">本公司积极履行《开源生态安全自律公约》</p>
 </div>
+<div style="position: absolute;bottom: 0; left: 35%; width: 30%; text-align: center">
+    <div style="height: 10px;background-color: #ebe9ec;width: 100%;top:0; border-radius: 10px;"></div>
+    <div id="progress"
+         style="position: absolute;height: 8px;background-color: #343235;transition: width 50ms cubic-bezier(0, 0, 0.2, 1);top:0; border-top-left-radius: 10px; border-bottom-left-radius: 8px;"></div>
+    <div id="details"
+         style="color: #6c6a6d;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;padding: 8px;"></div>
+</div>
+<!-- <script>  // just for UI developing test
+    document.getElementById('progress').style.width = 50 + '%'
+</script> -->
 <script>
     const sleep = (ms) => {
         return new Promise(resolve => setTimeout(resolve, ms))
