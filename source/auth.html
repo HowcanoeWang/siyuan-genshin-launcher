@@ -30,7 +30,7 @@
             --genshin-b3-input-text-color: var(--genshin-btn-dark);
             --genshin-b3-input-background-color: var(--genshin-panel-background);
             --genshin-url-text-color: var(--genshin-logo-title);
-            background-image: url('https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher/source/auth_light.png');
+            /* background-image: url('https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher/source/auth_light.png'); */
             /* ========== Original Siyuan Theme =========== */
             --b3-protyle-code-background: rgba(27, 31, 35, .05);
             --b3-protyle-inline-link-color: #4285f4;
@@ -60,7 +60,7 @@
             --b3-theme-on-background: #c9d1d9;
             --b3-theme-on-primary: #fff;
             /* background-color: var(--b3-theme-background); */
-            background-image: url('https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher/source/auth_dark.png');
+            /* background-image: url('https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher/source/auth_dark.png'); */
           }
 
         ::placeholder { /* Most modern browsers support this now. */
@@ -226,7 +226,7 @@
         }
     </style>
 </head>
-<body class="bgcover">
+<body class="bgcover" onclick="playAudio()">
 <div style="-webkit-app-region: drag;height: 32px;width: 100%;position: absolute;top: 0;"></div>
 <div style="position: relative; z-index: 2;text-align: center; background-color: var(--genshin-theme-on-background); padding: 30px; border-radius: 4px; width: max(240px, 30%);">
     <h2 style="color:var(--genshin-logo-title)">{{.workspace}}</h2>
@@ -247,9 +247,69 @@
 <div class="b3-snackbar" id="message">
     <div class="b3-snackbar__content"></div>
 </div>
+
+<video id="v1" autoplay loop muted style="position: fixed; min-width: 100%; min-height: 100%; height: auto; width: auto; z-index: -11; object-fit: cover;">
+    <source src="" type="video/mp4" style="min-width: 100%;  min-height: 100%;  height: auto;  width: auto; " />
+</video>
+
+<audio id="a1" autoplay loop muted>
+    <source src="" type="audio/mpeg">
+</audio>
+
 <script>
-  if ({{.appearanceModeOS}} && window.matchMedia('(prefers-color-scheme: dark)').matches || {{.appearanceMode}} === 1) {
-    document.body.classList.add('dark')
+    // detect video condition
+    var video = document.getElementById('v1');
+    var audio = document.getElementById('a1');
+
+    if (isDayTime()) {
+      video.src = "/plugins/siyuan-genshin-launcher/source/auth_light.mp4";
+      audio.src = "/plugins/siyuan-genshin-launcher/source/auth_light.mp3";
+    } else {
+      video.src = "/plugins/siyuan-genshin-launcher/source/auth_dark.mp4";
+      audio.src = "/plugins/siyuan-genshin-launcher/source/auth_dark.mp3";
+    }
+
+    video.addEventListener('error', function(event) {
+        console.log('video not found', event)
+
+        if (isDayTime()) {
+          video.src = 'https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher/source/auth_light.mp4'; // Just for vscode live port testing
+        } else {
+          video.src = 'https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher/source/auth_dark.mp4'; // Just for vscode live port testing
+        }
+        
+        video.load();
+    }, true);
+
+    // detect audio condition
+    audio.addEventListener('error', function(event) {
+        console.log('audio not found', event)
+        if (isDayTime()) {
+          audio.src = 'https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher/source/auth_light.mp3'; // Just for vscode live port testing
+        } else {
+          audio.src = 'https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher/source/auth_dark.mp3'; // Just for vscode live port testing
+        }
+        audio.load();
+    }, true);
+
+    function playAudio() {
+      audio.muted = false;
+      audio.play();
+    }
+
+    function isDayTime() {
+      var now = new Date();
+      var hour = now.getHours();
+      
+      // 假设白天时间为早上6点到晚上6点
+      var isDay = hour >= 6 && hour < 18;
+      
+      return isDay;
+    }
+</script>
+<script>
+  if (!isDayTime()) {
+    document.body.classList.add('dark');
   }
   if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
     document.querySelector('.b3-button--white').remove()
