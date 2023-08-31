@@ -32,6 +32,7 @@ module.exports = (env, argv) => {
                 {from: "README*.md", to: "./dist/"},
                 {from: "plugin.json", to: "./dist/"},
                 {from: "src/i18n/", to: "./dist/i18n/"},
+                {from: "source/", to: "./dist/source/"},
             ],
         }));
         plugins.push(new ZipPlugin({
