@@ -1,29 +1,30 @@
 {
-  "name": "plugin-sample",
-  "author": "Vanessa",
-  "url": "https://github.com/siyuan-note/plugin-sample",
-  "version": "0.2.2",
+  "name": "siyuan-genshin-launcher",
+  "author": "HowcanoeWang",
+  "url": "https://github.com/HowcanoeWang/siyuan-genshin-launcher",
+  "version": "4.0.0",
   "minAppVersion": "2.10.2",
-  "backends": ["windows", "linux", "darwin"],
+  "backends": ["windows", "darwin"],
   "frontends": ["desktop"],
   "displayName": {
-    "default": "Plugin Sample",
-    "zh_CN": "插件示例"
+    "default": "Genshen launcher",
+    "zh_CN": "源神，启动！"
   },
   "description": {
-    "default": "This is a plugin sample",
-    "zh_CN": "这是一个插件示例"
+    "default": "Why should your next Genshien be a Genshin?",
+    "zh_CN": "你的下一款原神，何必是原神"
   },
   "readme": {
-    "default": "README.md",
-    "zh_CN": "README_zh_CN.md"
+    "default": "README_en_US.md",
+    "zh_CN": "README.md",
+    "en_US": "README_en_US.md"
   },
   "funding": {
     "openCollective": "",
     "patreon": "",
     "github": "",
     "custom": [
-      "https://ld246.com/sponsor"
+      "https://afdian.net/a/HowcanoeWang"
     ]
   }
 }
