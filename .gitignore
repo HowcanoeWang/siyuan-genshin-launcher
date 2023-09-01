@@ -7,5 +7,6 @@ package.zip
 index.css
 index.js
 i18n
-static/ref/*
-static/genshin.svg/*
+projects/ref/*
+projects/genshin.svg/*
+projects/auth.mpx/*
