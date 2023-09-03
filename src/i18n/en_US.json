@@ -1,12 +1,17 @@
 {
-  "addTopBarIcon": "Add a top bar icon by plugin",
-  "cancel": "Cancel",
-  "save": "Save",
-  "byeMenu": "Bye, Menu!",
-  "helloPlugin": "Hello, Plugin!",
-  "byePlugin": "Bye, Plugin!",
-  "showDialog": "Show dialog",
-  "removedData": "Data deleted",
-  "confirmRemove": "Confirm to delete the data in ${name}?",
-  "insertEmoji": "Insert Emoji"
+  "helloPlugin": "Genshin, Start!",
+  "byePlugin": "Genshin, Stop!",
+  "affectAllWarn": "This plugin replacing installation directory files and it will affect all workspaces!", 
+  "replaceTitle": "Replace System Files", 
+  "replaceSubtitle": "Replace the startup interface with the Genshin Launcher", 
+  "requireAdmin": "(Administrator permission required for Windows)", 
+  "replaceBtn": "Replace", 
+  "replaceBtnText": "Replaced", 
+  "recoverTitle": "Restore System Files", 
+  "recoverSubtitle": "Restore the startup interface to SiYuan default", 
+  "recoverBtn": "Restore", 
+  "recoverBtnText": "Unable to Restore", 
+  "recoverBtnTitle1": "Reason: Original backup resources not found", 
+  "recoverBtnTitle2": "Reason: Please perform replace operation first", 
+  "reinstallInfo": "Reinstalling SiYuan can fully restore"
 }

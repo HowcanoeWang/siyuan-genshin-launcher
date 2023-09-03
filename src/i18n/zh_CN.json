@@ -1,12 +1,17 @@
 {
-  "addTopBarIcon": "使用插件添加一个顶栏按钮",
-  "cancel": "取消",
-  "save": "保存",
-  "byeMenu": "再见，菜单！",
-  "helloPlugin": "你好，插件！",
-  "byePlugin": "再见，插件！",
-  "showDialog": "弹出一个对话框",
-  "removedData": "数据已删除",
-  "confirmRemove": "确认删除 ${name} 中的数据？",
-  "insertEmoji": "插入表情"
+  "helloPlugin": "源神，启动！",
+  "byePlugin": "源神，卸载！",
+  "affectAllWarn": "此插件通过替换安装目录文件实现，会影响所有的工作空间！",
+  "replaceTitle": "替换系统文件",
+  "replaceSubtitle": "将启动界面替换为源神启动",
+  "requireAdmin": "(Windows需管理员权限)",
+  "replaceBtn": "替换",
+  "replaceBtnText": "已替换",
+  "recoverTitle": "还原系统文件",
+  "recoverSubtitle": "将启动界面还原为默认",
+  "recoverBtn": "还原",
+  "recoverBtnText": "无法还原",
+  "recoverBtnTitle1": "原因：未找到备份的原始资源",
+  "recoverBtnTitle2": "原因：请先进行替换操作",
+  "reinstallInfo": "重装思源笔记可以完全恢复为默认"
 }

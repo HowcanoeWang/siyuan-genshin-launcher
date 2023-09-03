@@ -16,6 +16,10 @@ const STORAGE_NAME = "Genshin";
 export default class PluginSample extends Plugin {
 
     private isMobile: boolean;
+    private renameFiles: {};
+    private mvFiles: {};
+    private mvKeys: string[];
+    private rnKeys: string[];
 
     onload() {
         this.data[STORAGE_NAME] = {readonlyText: "Readonly"};
@@ -37,17 +41,12 @@ export default class PluginSample extends Plugin {
         this.loadData(STORAGE_NAME);
         console.log(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
 
-        const [renameFiles, mvFiles] = this.generatePath();
+        [this.renameFiles, this.mvFiles] = this.generatePath();
 
-        const mvKeys = Object.keys(mvFiles);
-        const rnKeys = Object.keys(renameFiles);
+        this.mvKeys = Object.keys(this.mvFiles);
+        this.rnKeys = Object.keys(this.renameFiles);
 
-        const pluginHtmlVersion = this.hasReplacedTag(mvKeys[0]);
-        const appHtmlVersion = this.hasReplacedTag(rnKeys[0] + 'boot.html');
-
-        const [hasFullBackup, backupNum, TotalNum] =  this.hasBackupFiles(renameFiles);
-
-        console.log(pluginHtmlVersion, appHtmlVersion)
+        this.openSetting();
     }
 
     onunload() {
@@ -160,41 +159,80 @@ export default class PluginSample extends Plugin {
     // 自定义设置
     public openSetting() {
         const dialog = new Dialog({
-            title: this.name,
+            title: this.i18n.helloPlugin,
             content: `
-<div class="b3-dialog__content">
-    <textarea class="b3-text-field fn__block" placeholder="readonly text in the menu"></textarea>
+<div class="config-assets__preview b3-label" style="flex-direction: column;">
+    <img style="max-width: 25%" src="/plugins/${packageInfo.name}/source/icon.png">
+    <h3>${this.i18n.affectAllWarn}</h3>
+    <h4>${this.i18n.reinstallInfo}</h4>
 </div>
 <label class="b3-label fn__flex config__item">
    <div class="fn__flex-1">
-        恢复默认窗口
-        <div class="b3-label__text">重置后窗口布局将恢复初始化状态</div>
+        ${this.i18n.replaceTitle}
+        <div class="b3-label__text">${this.i18n.replaceSubtitle} ${getBackend()==='windows'? "<span class='ft__error'>"+this.i18n.requireAdmin+"</span>": ''}</div>
     </div>
     <span class="fn__space"></span>
-    <button class="b3-button b3-button--outline fn__flex-center fn__size200" id="resetLayout">
-        <svg><use xlink:href="#iconUndo"></use></svg>重置
+    <button class="b3-button b3-button--outline fn__flex-center fn__size200" id="replaceBtn">
+        <svg><use xlink:href="#iconReplace"></use></svg>${this.i18n.replaceBtn}
     </button>
 </label>
-<div class="b3-dialog__action">
-    <button class="b3-button b3-button--cancel">${this.i18n.cancel}</button><div class="fn__space"></div>
-    <button class="b3-button b3-button--text">${this.i18n.save}</button>
-</div>`,
-            width: this.isMobile ? "92vw" : "520px",
+<label class="b3-label fn__flex config__item">
+   <div class="fn__flex-1">
+        ${this.i18n.recoverTitle}
+        <div class="b3-label__text">${this.i18n.recoverSubtitle} ${getBackend()==='windows'? "<span class='ft__error'>"+this.i18n.requireAdmin+"</span>": ''}</div>
+    </div>
+    <span class="fn__space"></span>
+    <button class="b3-button b3-button--outline fn__flex-center fn__size200" id="recoverBtn" style="pointer-events: auto;">
+        <svg><use xlink:href="#iconUndo"></use></svg>${this.i18n.recoverBtn}
+    </button>
+</label>
+`,
+            width: this.isMobile ? "92vw" : "800px",
         });
-        const inputElement = dialog.element.querySelector("textarea");
-        inputElement.value = this.data[STORAGE_NAME].readonlyText;
-        const btnsElement = dialog.element.querySelectorAll(".b3-button");
-        dialog.bindInput(inputElement, () => {
-            (btnsElement[1] as HTMLButtonElement).click();
-        });
-        inputElement.focus();
-        btnsElement[0].addEventListener("click", () => {
-            dialog.destroy();
-        });
-        btnsElement[1].addEventListener("click", () => {
-            this.saveData(STORAGE_NAME, {readonlyText: inputElement.value});
-            dialog.destroy();
-        });
+
+
+        // 检查是否有.开头的备份文件
+        const [hasFullBackup, backupNum, TotalNum] =  this.hasBackupFiles(this.renameFiles);
+
+        // 检查安装目录的资源版本号，是否与插件自带的资源版本号一致
+        const pluginHtmlVersion = this.hasReplacedTag(this.mvKeys[0]);
+        const appHtmlVersion = this.hasReplacedTag(this.rnKeys[0] + 'boot.html');
+
+        console.log(pluginHtmlVersion, appHtmlVersion)
+
+        const replaceBtnElement = document.getElementById('replaceBtn') as HTMLButtonElement;
+        const recoverBtnElement = document.getElementById('recoverBtn') as HTMLButtonElement;
+
+        if (!appHtmlVersion || appHtmlVersion < pluginHtmlVersion) {
+            replaceBtnElement.disabled = false;
+        } else {
+            replaceBtnElement.disabled = true;
+            replaceBtnElement.textContent = this.i18n.replaceBtnText;
+        }
+
+        if (hasFullBackup) {
+            recoverBtnElement.disabled = false;
+            recoverBtnElement.title = '';
+        } else {
+            recoverBtnElement.disabled = true;
+            recoverBtnElement.textContent = this.i18n.recoverBtnText;
+            if (!appHtmlVersion) {
+                recoverBtnElement.title = this.i18n.recoverBtnTitle2;
+            } else {
+                recoverBtnElement.title = this.i18n.recoverBtnTitle1;
+            }
+            
+        }
+
+        replaceBtnElement.addEventListener("click", () => {
+            // dialog.destroy();
+            console.log('click replace btn');
+        })
+
+        recoverBtnElement.addEventListener("click", () => {
+            // dialog.destroy();
+            console.log('click recover btn');
+        })
     }
 
 }
