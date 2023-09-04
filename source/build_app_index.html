@@ -6,8 +6,30 @@
     <meta name="siyuan-genshin-launcher" content="4.0.0">
     <style id="editorFontSize"></style>
     <style id="editorAttr"></style>
-    <script defer="defer" src="main.1e7b2c2c5d76f49ec39a.js"></script>
-    <link href="base.cad645cb32b600122082.css" rel="stylesheet">
+    <script>
+        const fs = require('fs');
+        fs.readdir('./resources/stage/build/app/', (err, files) => {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log(files);
+                const mainJs = files.filter(file => file.startsWith('main'));
+                const baseCss = files.filter(file => file.startsWith('base'));
+
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = baseCss;
+                document.head.appendChild(link);
+
+                // 添加<script>
+                const script = document.createElement('script');
+                script.src = mainJs;
+                document.head.appendChild(script);
+            }
+        });
+    </script>
+    <!-- <script defer="defer" src="main.1e7b2c2c5d76f49ec39a.js"></script>
+    <link href="base.cad645cb32b600122082.css" rel="stylesheet"> -->
 </head>
 
 <body class="fn__flex-column">
