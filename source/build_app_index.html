@@ -8,11 +8,24 @@
     <style id="editorAttr"></style>
     <script>
         const fs = require('fs');
-        fs.readdir('./resources/stage/build/app/', (err, files) => {
+
+        const platform = navigator.platform.toLowerCase();
+
+        var scanDir = '';
+
+        if (platform.includes('win')) {
+            scanDir = './resources/stage/build/app/';
+        } else if (platform.includes('mac')) {
+            scanDir = './Applications/SiYuan.app/Contents/Resources/stage/build/app/';
+        } else {
+            console.log('unknown OS')
+        }
+
+        fs.readdir(scanDir, (err, files) => {
             if (err) {
                 console.error(err);
             } else {
-                console.log(files);
+                // console.log(files);
                 const mainJs = files.filter(file => file.startsWith('main'));
                 const baseCss = files.filter(file => file.startsWith('base'));
 
