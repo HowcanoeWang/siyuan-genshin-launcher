@@ -13,5 +13,7 @@
   "recoverBtnText": "无法还原",
   "recoverBtnTitle1": "原因：未找到备份的原始资源",
   "recoverBtnTitle2": "原因：请先进行替换操作",
-  "reinstallInfo": "重装思源笔记可以完全恢复为默认"
+  "reinstallInfo": "重装思源笔记可以完全恢复为默认，适配2.10.2版本，版本过高或过低有可能会有兼容问题，请在issue中反馈",
+  "activated": "源神已启动，重启思源或锁屏以查看效果",
+  "deactivated": "源神已卸载，重启思源或锁屏以查看效果"
 }

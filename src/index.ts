@@ -16,8 +16,8 @@ const STORAGE_NAME = "Genshin";
 export default class PluginSample extends Plugin {
 
     private isMobile: boolean;
-    private renameFiles: {};
-    private mvFiles: {};
+    private backupFiles: {[x: string]: string[]};
+    private mvFiles: {[x: string]: string[]};
     private mvKeys: string[];
     private rnKeys: string[];
 
@@ -34,6 +34,13 @@ export default class PluginSample extends Plugin {
 <path d="M20 13.333c0-0.733 0.6-1.333 1.333-1.333s1.333 0.6 1.333 1.333c0 0.733-0.6 1.333-1.333 1.333s-1.333-0.6-1.333-1.333zM10.667 12h6.667v-2.667h-6.667v2.667zM29.333 10v9.293l-3.76 1.253-2.24 7.453h-7.333v-2.667h-2.667v2.667h-7.333c0 0-3.333-11.28-3.333-15.333s3.28-7.333 7.333-7.333h6.667c1.213-1.613 3.147-2.667 5.333-2.667 1.107 0 2 0.893 2 2 0 0.28-0.053 0.533-0.16 0.773-0.187 0.453-0.347 0.973-0.427 1.533l3.027 3.027h2.893zM26.667 12.667h-1.333l-4.667-4.667c0-0.867 0.12-1.72 0.347-2.547-1.293 0.333-2.347 1.293-2.787 2.547h-8.227c-2.573 0-4.667 2.093-4.667 4.667 0 2.507 1.627 8.867 2.68 12.667h2.653v-2.667h8v2.667h2.68l2.067-6.867 3.253-1.093v-4.707z"></path>
 </symbol>`);
 
+        [this.backupFiles, this.mvFiles] = this.generatePath();
+
+        console.log("OnLoad", this.backupFiles);
+
+        this.mvKeys = Object.keys(this.mvFiles);
+        this.rnKeys = Object.keys(this.backupFiles);
+
         console.log(this.i18n.helloPlugin);
     }
 
@@ -41,12 +48,7 @@ export default class PluginSample extends Plugin {
         this.loadData(STORAGE_NAME);
         console.log(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
 
-        [this.renameFiles, this.mvFiles] = this.generatePath();
-
-        this.mvKeys = Object.keys(this.mvFiles);
-        this.rnKeys = Object.keys(this.renameFiles);
-
-        this.openSetting();
+        // this.openSetting();
     }
 
     onunload() {
@@ -64,7 +66,7 @@ export default class PluginSample extends Plugin {
             dataDir = dataDir.replaceAll('\\', '/');
         };
 
-        var renameFiles = {
+        var backupFiles = {
             // computed property [`...`]
             [`${appDir}/app/electron/`]: 
                 ['boot.html', 'icon.png'],
@@ -72,7 +74,7 @@ export default class PluginSample extends Plugin {
                 ['index.html', 'icon.png'],
             [`${appDir}/stage/`]: 
                 ['auth.html', 'icon.png', 'icon-large.png', 'loading.svg', 'loading-pure.svg'],
-            [`${appDir}/stage/build/app`]: 
+            [`${appDir}/stage/build/app/`]: 
                 ['index.html']
         }
 
@@ -97,7 +99,7 @@ export default class PluginSample extends Plugin {
 
         }
         
-        return [renameFiles, mvFiles];
+        return [backupFiles, mvFiles];
     }
 
     public hasReplacedTag(htmlPath: string) {
@@ -124,6 +126,8 @@ export default class PluginSample extends Plugin {
 
     public hasBackupFiles(renameFiles: {[x: string]: string[];}) {
         // ensure all has ".index.html", '.icon.png', etc..
+
+        console.log("hasBackupFiles", renameFiles)
 
         const rnKeys = Object.keys(renameFiles);
 
@@ -153,9 +157,80 @@ export default class PluginSample extends Plugin {
             has = true;
         } else 
 
+        console.log('hasBackupFiles', has, hasBackup, totalFileNum);
+
         return [has, hasBackup, totalFileNum]
     }
 
+    public backupCMD(spara='&&'){
+        var cmdStr: string = '';
+
+        for (var folder in this.backupFiles) {
+            var files = this.backupFiles[folder];
+            
+            for (var f of files) {
+                cmdStr += `mv '${folder}${f}' '${folder}.${f}' ${spara} `;
+
+            }
+        }
+        
+        cmdStr = cmdStr.slice(0, -(spara.length+2));
+
+        return cmdStr;
+    }
+
+    public replaceCMD(spara='&&'){
+
+        var cmdStr: string = '';
+
+        for (var sourceFile in this.mvFiles) {
+            var targetFiles = this.mvFiles[sourceFile];
+            
+            for (var targetFile of targetFiles) {
+                cmdStr += `cp '${sourceFile}' '${targetFile}' ${spara} `;
+            }
+        }
+
+        cmdStr = cmdStr.slice(0, -(spara.length+2));
+
+        return cmdStr;
+    }
+
+    public restoreCMD(spara='&&'){
+        var cmdStr: string = '';
+
+        for (var folder in this.backupFiles) {
+            var files = this.backupFiles[folder];
+            
+            for (var f of files) {
+                if (spara == '&&') {  // unix system
+                    cmdStr += `mv -f '${folder}.${f}' '${folder}${f}' ${spara} `;
+                } else { // powershell
+                    cmdStr += `mv '${folder}.${f}' '${folder}${f}' -Force ${spara} `;
+                }
+                
+            }
+        }
+        
+        cmdStr = cmdStr.slice(0, -(spara.length+2));
+
+        return cmdStr;
+    }
+
+
+    public execudeCMD(cmdStr:string){
+        // const demoCMD = "cp 'C:\\Users\\hwang\\Desktop\\aaa.bmp' 'C:\\Program Files\\SiYuan\\resources\\aaa.bmp'"
+        const spawn = (window as any).require('child_process').spawn;
+
+        if (getBackend() === 'windows') {
+            spawn(
+                `Start-Process powershell.exe -Verb runAs -ArgumentList \"-NoExit -Command ${cmdStr}\"`, 
+                {shell:"powershell.exe"}
+            );
+        } else {
+            spawn(cmdStr, {shell: true});
+        }
+    }
     // 自定义设置
     public openSetting() {
         const dialog = new Dialog({
@@ -190,9 +265,10 @@ export default class PluginSample extends Plugin {
             width: this.isMobile ? "92vw" : "800px",
         });
 
+        console.log("OpenSetting", this.backupFiles);
 
         // 检查是否有.开头的备份文件
-        const [hasFullBackup, backupNum, TotalNum] =  this.hasBackupFiles(this.renameFiles);
+        const [hasFullBackup, backupNum, TotalNum] =  this.hasBackupFiles(this.backupFiles);
 
         // 检查安装目录的资源版本号，是否与插件自带的资源版本号一致
         const pluginHtmlVersion = this.hasReplacedTag(this.mvKeys[0]);
@@ -224,14 +300,30 @@ export default class PluginSample extends Plugin {
             
         }
 
+        var spara: string = '';
+        if (getBackend() === 'windows') {
+            spara = ';'
+        } else {
+            spara = '&&'
+        }
+
         replaceBtnElement.addEventListener("click", () => {
-            // dialog.destroy();
-            console.log('click replace btn');
+            const backupCmdStr = this.backupCMD(spara);
+            const replaceCmdStr = this.replaceCMD(spara);
+            console.log(`click replace btn, execute the following command: Backup Siyuan files:\n${backupCmdStr}\nReplace Siyuan files:\n${replaceCmdStr}`);
+
+            this.execudeCMD(backupCmdStr + ` ${spara} ` + replaceCmdStr);
+
+            dialog.destroy();
         })
 
         recoverBtnElement.addEventListener("click", () => {
-            // dialog.destroy();
-            console.log('click recover btn');
+            const restoreCmdStr = this.restoreCMD(spara);
+            console.log(`click recover btn, execute the following command: ${restoreCmdStr}`);
+
+            this.execudeCMD(restoreCmdStr);
+
+            dialog.destroy();
         })
     }
 
