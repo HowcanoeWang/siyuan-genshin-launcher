@@ -36,8 +36,6 @@ export default class PluginSample extends Plugin {
 
         [this.backupFiles, this.mvFiles] = this.generatePath();
 
-        console.log("OnLoad", this.backupFiles);
-
         this.mvKeys = Object.keys(this.mvFiles);
         this.rnKeys = Object.keys(this.backupFiles);
 
@@ -48,6 +46,7 @@ export default class PluginSample extends Plugin {
         this.loadData(STORAGE_NAME);
         console.log(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
 
+        // debug usage
         // this.openSetting();
     }
 
@@ -127,7 +126,7 @@ export default class PluginSample extends Plugin {
     public hasBackupFiles(renameFiles: {[x: string]: string[];}) {
         // ensure all has ".index.html", '.icon.png', etc..
 
-        console.log("hasBackupFiles", renameFiles)
+        // console.log("hasBackupFiles", renameFiles)
 
         const rnKeys = Object.keys(renameFiles);
 
@@ -157,6 +156,7 @@ export default class PluginSample extends Plugin {
             has = true;
         } else 
 
+        // must keep this, otherwise will got undefined error
         console.log('hasBackupFiles', has, hasBackup, totalFileNum);
 
         return [has, hasBackup, totalFileNum]
@@ -265,8 +265,6 @@ export default class PluginSample extends Plugin {
             width: this.isMobile ? "92vw" : "800px",
         });
 
-        console.log("OpenSetting", this.backupFiles);
-
         // 检查是否有.开头的备份文件
         const [hasFullBackup, backupNum, TotalNum] =  this.hasBackupFiles(this.backupFiles);
 
@@ -315,6 +313,8 @@ export default class PluginSample extends Plugin {
             this.execudeCMD(backupCmdStr + ` ${spara} ` + replaceCmdStr);
 
             dialog.destroy();
+
+            showMessage(this.i18n.activated, 10000, "info")
         })
 
         recoverBtnElement.addEventListener("click", () => {
@@ -324,6 +324,8 @@ export default class PluginSample extends Plugin {
             this.execudeCMD(restoreCmdStr);
 
             dialog.destroy();
+
+            showMessage(this.i18n.deactivated, 10000, "info")
         })
     }
 

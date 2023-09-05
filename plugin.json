@@ -7,11 +7,11 @@
   "backends": ["windows", "darwin"],
   "frontends": ["desktop"],
   "displayName": {
-    "default": "Genshen launcher",
+    "default": "Genshin launcher",
     "zh_CN": "源神，启动！"
   },
   "description": {
-    "default": "Why should your next Genshien be a Genshin?",
+    "default": "Why should your next Genshin be a Genshin?",
     "zh_CN": "你的下一款原神，何必是原神"
   },
   "readme": {
