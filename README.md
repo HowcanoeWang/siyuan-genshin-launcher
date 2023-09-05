@@ -2,9 +2,15 @@
 
 # SiYuan plugin sample
 
+警告：通过替换系统文件实现，会影响多个工作空间，未来有可能出现不兼容问题，重装可以恢复，
+
+锁屏界面根据时间来(记得设置中开启锁屏)
+
+windows和macos的支持，linux和移动端不支持的原因
+
 ## Get started
 
-* Make a copy of this repo as a template with the <kbd>Use this template</kbd> button, please note that the repo name
+* Make a copy of this repo as a template with the `<kbd>`Use this template`</kbd>` button, please note that the repo name
   must be the same as the plugin name, the default branch must be `main`
 * Clone your repo to a local development folder. For convenience, you can place this folder in
   your `{workspace}/data/plugins/` folder
@@ -31,10 +37,10 @@ In terms of internationalization, our main consideration is to support multiple 
 complete the following tasks:
 
 * Meta information about the plugin itself, such as plugin description and readme
-    * `description` and `readme` fields in plugin.json, and the corresponding README*.md file
+  * `description` and `readme` fields in plugin.json, and the corresponding README*.md file
 * Text used in the plugin, such as button text and tooltips
-    * src/i18n/*.json language configuration files
-    * Use `this.i18.key` to get the text in the code
+  * src/i18n/*.json language configuration files
+  * Use `this.i18.key` to get the text in the code
 * Finally, declare the language supported by the plugin in the `i18n` field in plugin.json
 
 It is recommended that the plugin supports at least English and Simplified Chinese, so that more people can use it more
@@ -96,19 +102,19 @@ conveniently.
   * `browser-mobile`: Mobile browser
   * `all`: All environments
 * `displayName`: Template display name, mainly used for display in the marketplace list, supports multiple languages
-    * `default`: Default language, must exist
-    * `zh_CN`, `en_US` and other languages: optional, it is recommended to provide at least Chinese and English
+  * `default`: Default language, must exist
+  * `zh_CN`, `en_US` and other languages: optional, it is recommended to provide at least Chinese and English
 * `description`: Plugin description, mainly used for display in the marketplace list, supports multiple languages
-    * `default`: Default language, must exist
-    * `zh_CN`, `en_US` and other languages: optional, it is recommended to provide at least Chinese and English
+  * `default`: Default language, must exist
+  * `zh_CN`, `en_US` and other languages: optional, it is recommended to provide at least Chinese and English
 * `readme`: readme file name, mainly used to display in the marketplace details page, supports multiple languages
-    * `default`: Default language, must exist
-    * `zh_CN`, `en_US` and other languages: optional, it is recommended to provide at least Chinese and English
+  * `default`: Default language, must exist
+  * `zh_CN`, `en_US` and other languages: optional, it is recommended to provide at least Chinese and English
 * `funding`: Plugin sponsorship information
-    * `openCollective`: Open Collective name
-    * `patreon`: Patreon name
-    * `github`: GitHub login name
-    * `custom`: Custom sponsorship link list
+  * `openCollective`: Open Collective name
+  * `patreon`: Patreon name
+  * `github`: GitHub login name
+  * `custom`: Custom sponsorship link list
 
 ## Package
 
