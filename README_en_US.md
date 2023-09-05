@@ -12,7 +12,8 @@ English | [简体中文](https://github.com/HowcanoeWang/siyuan-genshin-launcher
 
 # Installation Notes
 
-* <b style='color:red'>This plugin achieves its functionality by replacing files in the installation directory, which will affect all workspaces!</b>
+* <b style='color:red'>The copyright of the images, icons, music, and video clips used in this plugin belongs to miHoYo. This plugin is not an official feature of SiYuan Note, but was created by the plugin author for personal learning of front-end development. It is provided as teaching and learning purposes for plugin developers. All code and materials are publicly available for free, please do not use for other commercial purposes.</b>
+* **This plugin achieves its functionality by replacing files in the installation directory, which will affect all workspaces!**</b>**
 * Currently only supports Windows and MacOS, with Windows requiring administrator privileges for replacement.
 * The Linux version does not work after restarting due to AppImage running in a temporary folder each time.
 * The f\*\*king stupid file permission in the Android 11+ completely blocks this technical approach.
