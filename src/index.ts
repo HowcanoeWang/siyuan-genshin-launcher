@@ -7,11 +7,13 @@ import {
     getBackend,
 } from "siyuan";
 import "./index.scss";
-import packageInfo from '../plugin.json'
+// import * as waifujs from './l2d/waifu-tips.js';
+// import * as l2djs from './l2d/live2d_bundle';
 
 const fs = (window as any).require('fs');
 
 const STORAGE_NAME = "Genshin";
+const pname = 'siyuan-genshin-launcher';
 
 export default class PluginSample extends Plugin {
 
@@ -34,20 +36,30 @@ export default class PluginSample extends Plugin {
 <path d="M20 13.333c0-0.733 0.6-1.333 1.333-1.333s1.333 0.6 1.333 1.333c0 0.733-0.6 1.333-1.333 1.333s-1.333-0.6-1.333-1.333zM10.667 12h6.667v-2.667h-6.667v2.667zM29.333 10v9.293l-3.76 1.253-2.24 7.453h-7.333v-2.667h-2.667v2.667h-7.333c0 0-3.333-11.28-3.333-15.333s3.28-7.333 7.333-7.333h6.667c1.213-1.613 3.147-2.667 5.333-2.667 1.107 0 2 0.893 2 2 0 0.28-0.053 0.533-0.16 0.773-0.187 0.453-0.347 0.973-0.427 1.533l3.027 3.027h2.893zM26.667 12.667h-1.333l-4.667-4.667c0-0.867 0.12-1.72 0.347-2.547-1.293 0.333-2.347 1.293-2.787 2.547h-8.227c-2.573 0-4.667 2.093-4.667 4.667 0 2.507 1.627 8.867 2.68 12.667h2.653v-2.667h8v2.667h2.68l2.067-6.867 3.253-1.093v-4.707z"></path>
 </symbol>`);
 
+        console.log(this.i18n.helloPlugin);
+    }
+
+    async onLayoutReady() {
+        this.loadData(STORAGE_NAME);
+        console.log(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
+
         [this.backupFiles, this.mvFiles] = this.generatePath();
 
         this.mvKeys = Object.keys(this.mvFiles);
         this.rnKeys = Object.keys(this.backupFiles);
 
-        console.log(this.i18n.helloPlugin);
-    }
+        // 检查是否有.开头的备份文件
+        const [hasFullBackup, backupNum, TotalNum] =  this.hasBackupFiles(this.backupFiles);
 
-    onLayoutReady() {
-        this.loadData(STORAGE_NAME);
-        console.log(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
+        // 检查安装目录的资源版本号，是否与插件自带的资源版本号一致
+        const pluginHtmlVersion = this.hasReplacedTag(this.mvKeys[0]);
+        const appHtmlVersion = this.hasReplacedTag(this.rnKeys[0] + 'boot.html');
 
-        // debug usage
-        // this.openSetting();
+        if (!hasFullBackup || appHtmlVersion < pluginHtmlVersion) {
+            this.openSetting();
+        }
+
+        await this.waifu();
     }
 
     onunload() {
@@ -56,7 +68,6 @@ export default class PluginSample extends Plugin {
 
     public generatePath() {
         const os = (window as any).siyuan.config.system.os
-        const pname = packageInfo.name;
         
         var appDir = (window as any).siyuan.config.system.appDir;
         var dataDir = (window as any).siyuan.config.system.dataDir;
@@ -237,7 +248,7 @@ export default class PluginSample extends Plugin {
             title: this.i18n.helloPlugin,
             content: `
 <div class="config-assets__preview b3-label" style="flex-direction: column;">
-    <img style="max-width: 25%" src="/plugins/${packageInfo.name}/source/icon.png">
+    <img style="max-width: 25%" src="/plugins/${pname}/source/icon.png">
     <h3>${this.i18n.affectAllWarn}</h3>
     <h4>${this.i18n.reinstallInfo}</h4>
 </div>
@@ -352,6 +363,77 @@ export default class PluginSample extends Plugin {
 
             showMessage(this.i18n.deactivated, 10000, "info")
         })
+    }
+
+    public async unzipPaimon() {
+        const wsDir = (window as any).siyuan.config.system.workspaceDir;
+        const modelFolder = `${wsDir}/data/plugins/${pname}/l2d/model/paimon/`;
+        const zipFile = `${wsDir}/data/plugins/${pname}/source/paimon.zip`
+
+        let res = await fetch("/api/archive/unzip", {
+            method: "POST",
+            // body: data,
+            body: JSON.stringify({
+                "path": modelFolder,
+                "zipPath": zipFile
+            })
+        });
+        return await res.json();
+    }
+
+    public async waifu(){
+        // unzip if model not exists
+        const fs = (window as any).require('fs');
+        
+        if (!fs.existsSync(`./plugins/${pname}/l2d/model/paimon/`)) {
+            console.log('unzip paimon.zip');
+            const res = await this.unzipPaimon();
+            console.log(res);
+        }
+
+        const waifuElement = document.createElement('div');
+        waifuElement.id = "waifu";
+
+        const waifuInnerHTML = `
+            <div id="waifu-message"></div>
+            <div class="waifu-tool">
+                <span class="icon-next"></span>
+                <span class="icon-home"></span>
+                <span class="icon-message"></span>
+                <span class="icon-camera"></span>
+                <span class="icon-volumeup"></span>
+                <span class="icon-volumedown"></span>
+                <span class="icon-about"></span>
+                <span class="icon-cross"></span>
+            </div>
+            <canvas id="live2d2"></canvas>
+            <canvas id="live2d4"></canvas>
+        `
+        waifuElement.innerHTML = waifuInnerHTML;
+
+        document.body.appendChild(waifuElement);
+
+        // 添加<script>
+        // <script src="dist/live2d_bundle.js"></script>
+        // <script async type="module" src="waifu-tips.js"></script>
+        const live2d_bundle_js = document.createElement('script');
+        live2d_bundle_js.src = `./plugins/${pname}/l2d/live2d_bundle.js`;
+        document.body.appendChild(live2d_bundle_js);
+
+        
+        const waifu_tips_js = document.createElement('script');
+        waifu_tips_js.src = `./plugins/${pname}/l2d/waifu-tips.js`;
+        waifu_tips_js.setAttribute('type', 'module');
+        waifu_tips_js.async = true;
+        
+        document.body.appendChild(waifu_tips_js);
+        
+        // const waifujs = await import('./l2d/waifu-tips.js');
+
+        // show model
+        // sessionStorage.removeItem('waifuHide');
+        // document.getElementById('waifu').classList.remove('hide');
+        // waifujs.initModel();
     }
 
 }

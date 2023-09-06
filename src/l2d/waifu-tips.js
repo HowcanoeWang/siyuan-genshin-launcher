@@ -19,26 +19,26 @@
  ****************************************************************************************************/
 const live2d_settings = {
     // 基本设置
-    'modelUrl': 'model',                        // 存放模型的文件夹路径，末尾不需要斜杠
-    'tipsMessage': 'waifu-tips.json',           // 看板娘提示消息文件的路径，可以留空不加载
+    'modelUrl': './plugins/siyuan-genshin-launcher/l2d/model',                        // 存放模型的文件夹路径，末尾不需要斜杠
+    'tipsMessage': './plugins/siyuan-genshin-launcher/l2d/waifu-tips.json',           // 看板娘提示消息文件的路径，可以留空不加载
     // 模型设置
     'modelName': 'paimon',                      // 默认加载的模型名称，仅在无本地记录的情况下有效
     'modelStorage': true,                       // 记忆模型，下次打开页面会加载上次选择的模型
     'modelRandMode': false,                     // 随机切换模型
-    'preLoadMotion': true,                      // 是否预载动作数据，只对 model3 模型有效，不预载可以提高 model3 模型的加载速度，但可能导致首次触发动作时卡顿
+    'preLoadMotion': false,                      // 是否预载动作数据，只对 model3 模型有效，不预载可以提高 model3 模型的加载速度，但可能导致首次触发动作时卡顿
     'tryWebp': true,                            // 如果浏览器支持 WebP 格式，将优先加载 WebP 格式的贴图，例如默认贴图文件为 klee.8192/texture_00.png，
                                                 // 启用后将优先加载 klee.8192/texture_00.png.webp，文件不存在会自动 fallback
     // 工具栏设置
-    'showToolMenu': true,                       // 显示 工具栏
-    'canCloseLive2d': true,                     // 显示 关闭看板娘 按钮
-    'canSwitchModel': true,                     // 显示 模型切换 按钮
-    'canSwitchHitokoto': true,                  // 显示 一言切换 按钮
-    'canTakeScreenshot': true,                  // 显示 看板娘截图 按钮
-    'canTurnToHomePage': true,                  // 显示 返回首页 按钮
-    'canTurnToAboutPage': true,                 // 显示 跳转关于页 按钮
+    'showToolMenu': false,                       // 显示 工具栏
+    'canCloseLive2d': false,                     // 显示 关闭看板娘 按钮
+    'canSwitchModel': false,                     // 显示 模型切换 按钮
+    'canSwitchHitokoto': false,                  // 显示 一言切换 按钮
+    'canTakeScreenshot': false,                  // 显示 看板娘截图 按钮
+    'canTurnToHomePage': false,                  // 显示 返回首页 按钮
+    'canTurnToAboutPage': false,                 // 显示 跳转关于页 按钮
     'showVolumeBtn': false,                     // 显示 音量控制 按钮，仅作显示，相关逻辑需自己实现
     // 提示消息设置
-    'showHitokoto': true,                       // 空闲时显示一言
+    'showHitokoto': false,                       // 空闲时显示一言
     'hitokotoAPI': '',                          // 一言 API，可选 'hitokoto.cn'(默认), 'lwl12.com', 'jinrishici.com'(古诗词), 'fghrsh.net'
     'showWelcomeMessage': true,                 // 显示进入页面欢迎词
     'showCopyMessage': true,                    // 显示复制内容提示，默认只对 '#articleContent' 元素内的复制进行监视，如果你的文章内容不在这个标签下，可以在下方搜索并修改
@@ -46,7 +46,7 @@ const live2d_settings = {
     //看板娘样式设置
     'live2dHeight': 680,                        // 看板娘高度，不需要单位
     'live2dWidth': 500,                         // 看板娘宽度，不需要单位
-    'waifuMinWidth': 'disable',                 // 页面小于宽度小于指定数值时隐藏看板娘，例如 'disable'(禁用)，推荐 '1040px'
+    'waifuMinWidth': '1040px',                 // 页面小于宽度小于指定数值时隐藏看板娘，例如 'disable'(禁用)，推荐 '1040px'
     'waifuEdgeSide': 'right:0',                 // 看板娘贴边方向，例如 'left:0'(靠左 0px)，'right:30'(靠右 30px)，可以被下面的模型设置覆盖
     // 其他杂项设置
     'debug': true,                              // 全局 DEBUG 设置
@@ -64,33 +64,7 @@ const live2d_models = [
         message: 'SDK4 Emergency Food bilibili@根瘤菌rkzj',  // 切换时的提示信息
         version: 3,                                         // 模型版本，model3.json 结尾的都填3，model.json 结尾的填2
         // position: 'left'                                 // 此模型的显示位置，会覆盖上面的全局设置，只对此模型生效
-    },
-    {
-        name: 'paimen',                                     // 模型名称要与文件夹名相同
-        message: 'SDK4 Emergency Food bilibili@根瘤菌rkzj',  // 切换时的提示信息
-        version: 3,                                         // 模型版本，model3.json 结尾的都填3，model.json 结尾的填2
-        // position: 'left'                                 // 此模型的显示位置，会覆盖上面的全局设置，只对此模型生效
-    },
-    {
-        name: 'miku',
-        message: 'SDK2.1 official sample 初音ミク <a href="https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html">LICENSE</a>',
-        version: 2
-    },
-    {
-        name: 'shizuku',
-        message: 'SDK2.1 official sample しずく <a href="https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html">LICENSE</a>',
-        version: 2
-    },
-    {
-        name: 'houmuya',
-        message: 'SDK3 bronya bilibili@呦克里斯汀娜呦',
-        version: 3
-    },
-    {
-        name: 'Rice',
-        message: 'SDK4 official sample Rice <a href="https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html">LICENSE</a>',
-        version: 3
-    },
+    }
 ]
 /****************************************************************************************************/
 // SessionStorage LocalStorage 操作
