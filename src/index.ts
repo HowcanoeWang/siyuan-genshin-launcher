@@ -277,8 +277,19 @@ export default class PluginSample extends Plugin {
         const replaceBtnElement = document.getElementById('replaceBtn') as HTMLButtonElement;
         const recoverBtnElement = document.getElementById('recoverBtn') as HTMLButtonElement;
 
-        if (!appHtmlVersion || appHtmlVersion < pluginHtmlVersion) {
+        if (!appHtmlVersion) {
+            // 安装目录/boot.html没有<meta genshin-launcher> tag
+            // 激活替换按钮
             replaceBtnElement.disabled = false;
+        } else if (appHtmlVersion < pluginHtmlVersion) {
+            // 安装目录/boot.html有<meta genshin-launcher> tag
+            // 但是tag的版本低于插件自带的tag版本
+
+            // 激活替换按钮
+            replaceBtnElement.disabled = false;
+            // 并且把按钮文字，更改为更新
+            replaceBtnElement.innerHTML = '<svg><use xlink:href="#iconReplace"></use></svg>' + this.i18n.replaceBtnUpdate;
+        
         } else {
             replaceBtnElement.disabled = true;
             replaceBtnElement.textContent = this.i18n.replaceBtnText;
@@ -308,9 +319,23 @@ export default class PluginSample extends Plugin {
         replaceBtnElement.addEventListener("click", () => {
             const backupCmdStr = this.backupCMD(spara);
             const replaceCmdStr = this.replaceCMD(spara);
-            console.log(`click replace btn, execute the following command: Backup Siyuan files:\n${backupCmdStr}\nReplace Siyuan files:\n${replaceCmdStr}`);
 
-            this.execudeCMD(backupCmdStr + ` ${spara} ` + replaceCmdStr);
+            // 安装目录下的html没有备份文件
+            if (!hasFullBackup) {
+                // 则先运行备份脚本，然后再进行替换
+                console.log(`click replace btn, execute the following command: Backup Siyuan files:\n${backupCmdStr}\nReplace Siyuan files:\n${replaceCmdStr}`);
+
+                this.execudeCMD(backupCmdStr + ` ${spara} ` + replaceCmdStr);
+
+             // 安装目录下的html有备份文件
+            } else {
+                // 这种情况下，不需要进行备份(会把原本的思源备份给替换掉)
+                // 直接运行替换脚本
+                console.log(`click replace btn, execute the following command:\nReplace Siyuan files:\n${replaceCmdStr}`);
+
+                this.execudeCMD(replaceCmdStr);
+            }
+
 
             dialog.destroy();
 
