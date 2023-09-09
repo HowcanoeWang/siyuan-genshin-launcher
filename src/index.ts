@@ -395,7 +395,7 @@ export default class PluginSample extends Plugin {
         waifuElement.id = "waifu";
 
         const waifuInnerHTML = `
-            <div id="waifu-message"></div>
+            <div id="waifu-message" style="max-width:250px;overflow-wrap: break-word"></div>
             <div class="waifu-tool">
                 <span class="icon-next"></span>
                 <span class="icon-home"></span>
