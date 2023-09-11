@@ -22,6 +22,7 @@ English | [简体中文](https://github.com/HowcanoeWang/siyuan-genshin-launcher
     *  After reinstalling, need to re-run the plugin.
 * Remember to enable the lock screen feature in `Settings` - `About` - `Access Authorization Code` for better experience.
     * The lock screen page has background music, but Chrome security permissions require manual click to trigger playback.
+* Light and dark mode change according to local time (6:00 to 18:00 as light mode), following Genshin's logic rather than SiYuan's mode setting.
 
 # Features
 

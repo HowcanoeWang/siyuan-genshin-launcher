@@ -6,6 +6,15 @@
     <meta name="siyuan-genshin-launcher" content="4.0.1">
     <style id="editorFontSize"></style>
     <style id="editorAttr"></style>
+    <style>
+        body {
+            --genshin-bg-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .dark {
+            --genshin-bg-color: #3a3b40;
+        }
+    </style>
     <script>
         const fs = require('fs');
 
@@ -47,9 +56,9 @@
 
 <body class="fn__flex-column">
     <div id="loading" class="b3-dialog b3-dialog--open">
-        <div class="b3-dialog__scrim" style="background-color:rgba(255, 255, 255, 0.8)"></div><img style="position:absolute;width:36vh"
+        <div class="b3-dialog__scrim" style="background-color:var(--genshin-bg-color);"></div><img style="position:absolute;width:36vh"
             src="../../loading.svg"> <button onclick="window.location.reload()" id="loadingRefresh"
-            style="display:none;position:absolute;bottom:16px;background:0 0;color:#d2b75f;background-color: #3a3b40; border-radius:6px;line-height:20px;padding:10px 10px">Click
+            style="display:none;position:absolute;bottom:16px;background:0 0;color:#d2b75f;background-color: #3a3b40; border-radius:6px;line-height:20px;padding:10px 10px;border-color: rgb(210,183,95)">Click
             to Refresh<br>点　击　刷　新</button>
     </div>
     <div id="toolbar" class="toolbar fn__flex"></div>
@@ -68,6 +77,21 @@
     </div>
     <div id="message" class="b3-snackbars"></div>
     <script>setTimeout(() => { const e = document.getElementById("loadingRefresh"); e && (e.style.display = "") }, 2e3)</script>
+    <script>
+        function isDayTime() {
+            var now = new Date();
+            var hour = now.getHours();
+            
+            // 假设白天时间为早上6点到晚上6点
+            var isDay = hour >= 6 && hour < 18;
+            
+            return isDay;
+        }
+
+        if (!isDayTime()) {
+            document.body.classList.add('dark');
+        }
+    </script>
 </body>
 
 </html>
