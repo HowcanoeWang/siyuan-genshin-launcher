@@ -23,13 +23,21 @@ English | [简体中文](https://github.com/HowcanoeWang/siyuan-genshin-launcher
 * Remember to enable the lock screen feature in `Settings` - `About` - `Access Authorization Code` for better experience.
     * The lock screen page has background music, but Chrome security permissions require manual click to trigger playback.
 * Light and dark mode change according to local time (6:00 to 18:00 as light mode), following Genshin's logic rather than SiYuan's mode setting.
+* The plugin also has the capability to automatically replace the application icon.    
+  However, on Mac, due to icon caching, the changes may not take effect immediately and a computer restart is required.     
+  If the changes still do not take effect after multiple restarts, you can clear the icon cache by executing the following command in the terminal (<b style='color:red'> risky operation and should only be used as a last resort</b>):    
+  `sudo -S rm -rfv /Library/Caches/com.apple.iconservices.store && killall Dock && killall Finder`
 
 # Features
 
 * [X] Startup page simulates Genshin Impact UI.
 * [X] Lock screen page simulates Genshin Impact UI and changes with local time.
 * [X] Loading page with Genshin Impact loading icon.
+* [ ] Replace App Icon
 * [ ] Paimon as a virtual assistant.
+    * [ ] Provide OnOff in setting
+    * [ ] Allow drag by mouse
+    * [ ] Allow mute
 
 
 # References

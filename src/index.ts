@@ -18,6 +18,7 @@ const pname = 'siyuan-genshin-launcher';
 export default class PluginSample extends Plugin {
 
     private isMobile: boolean;
+    private os: string;
     private backupFiles: {[x: string]: string[]};
     private mvFiles: {[x: string]: string[]};
     private mvKeys: string[];
@@ -27,6 +28,7 @@ export default class PluginSample extends Plugin {
         this.data[STORAGE_NAME] = {readonlyText: "Readonly"};
 
         const frontEnd = getFrontend();
+        this.os = getBackend();
         this.isMobile = frontEnd === "mobile" || frontEnd === "browser-mobile";
         // 图标的制作参见帮助文档
         this.addIcons(`<symbol id="iconFace" viewBox="0 0 32 32">
@@ -67,11 +69,10 @@ export default class PluginSample extends Plugin {
     }
 
     public generatePath() {
-        const os = (window as any).siyuan.config.system.os
         
         var appDir = (window as any).siyuan.config.system.appDir;
         var dataDir = (window as any).siyuan.config.system.dataDir;
-        if ( os === 'windows'){
+        if ( this.os === 'windows'){
             appDir = appDir.replaceAll('\\', '/');
             dataDir = dataDir.replaceAll('\\', '/');
         };
@@ -108,6 +109,15 @@ export default class PluginSample extends Plugin {
                 [`${appDir}/stage/loading-pure.svg`],
 
         }
+
+        // icon files
+        if ( this.os === 'windows'){
+    
+        };
+        if ( this.os === 'darwin'){
+            backupFiles[`${appDir}/`] = ['icon.icns'];
+            mvFiles[`${dataDir}/plugins/${pname}/source/iconMac.icns`] = [`${appDir}/icon.icns`];
+        };
         
         return [backupFiles, mvFiles];
     }
@@ -228,19 +238,48 @@ export default class PluginSample extends Plugin {
         return cmdStr;
     }
 
+    public clearCacheCMD() {
+        if (this.os === 'windows') {
 
-    public execudeCMD(cmdStr:string){
+        } else if (this.os === 'darwin') {
+            return 'sudo -S rm -rfv /Library/Caches/com.apple.iconservices.store && killall Dock && killall Finder'
+        }
+    }
+
+    public async execudeCMD(cmdStr:string){
         // const demoCMD = "cp 'C:\\Users\\hwang\\Desktop\\aaa.bmp' 'C:\\Program Files\\SiYuan\\resources\\aaa.bmp'"
         const spawn = (window as any).require('child_process').spawn;
 
+        var spawn_cmd:string;
+        var spawn_param:{};
+
         if (getBackend() === 'windows') {
-            spawn(
-                `Start-Process powershell.exe -Verb runAs -ArgumentList \"-NoExit -Command ${cmdStr}\"`, 
-                {shell:"powershell.exe"}
-            );
+            spawn_cmd = `Start-Process powershell.exe -Verb runAs -ArgumentList \"-NoExit -Command ${cmdStr}\"`;
+            spawn_param = {shell:"powershell.exe"};
         } else {
-            spawn(cmdStr, {shell: true});
+            spawn_cmd = cmdStr;
+            spawn_param = {shell: true};
         }
+
+        const child = spawn(spawn_cmd, spawn_param,
+            (error: any, stdout: any, stderr: any) => {
+                if (error) {
+                  console.error(`执行命令时出错：${error.toString()}`);
+                  return;
+                }
+                console.log(`命令输出：${stdout.toString()}`);
+                console.error(`错误输出：${stderr.toString()}`);
+            }
+        );
+
+        // 监听子进程的 stdout 和 stderr 输出
+        child.stdout.on('data', (data: any) => {
+            console.log(data.toString());
+        });
+        
+        child.stderr.on('data', (data: any) => {
+            console.error(data.toString());
+        });
     }
     // 自定义设置
     public openSetting() {
@@ -334,7 +373,7 @@ export default class PluginSample extends Plugin {
             // 安装目录下的html没有备份文件
             if (!hasFullBackup) {
                 // 则先运行备份脚本，然后再进行替换
-                console.log(`click replace btn, execute the following command: Backup Siyuan files:\n${backupCmdStr}\nReplace Siyuan files:\n${replaceCmdStr}`);
+                console.log(`click replace btn, execute the following command: Backup + Replace Siyuan files:\n${backupCmdStr} ${spara} ${replaceCmdStr}`);
 
                 this.execudeCMD(backupCmdStr + ` ${spara} ` + replaceCmdStr);
 
