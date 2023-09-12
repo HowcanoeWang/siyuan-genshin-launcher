@@ -24,9 +24,10 @@ English | [简体中文](https://github.com/HowcanoeWang/siyuan-genshin-launcher
     * The lock screen page has background music, but Chrome security permissions require manual click to trigger playback.
 * Light and dark mode change according to local time (6:00 to 18:00 as light mode), following Genshin's logic rather than SiYuan's mode setting.
 * The plugin also has the capability to automatically replace the application icon.    
-  However, on Mac, due to icon caching, the changes may not take effect immediately and a computer restart is required.     
-  If the changes still do not take effect after multiple restarts, you can clear the icon cache by executing the following command in the terminal (<b style='color:red'> risky operation and should only be used as a last resort</b>):    
-  `sudo -S rm -rfv /Library/Caches/com.apple.iconservices.store && killall Dock && killall Finder`
+  However, on Mac, due to icon caching, the changes may not take effect immediately and even after restart.     
+  Please manually replace the icon by the following step:    
+  <img src="https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher/imgs/macIconReplace.png">    
+  Applications -> SiYuan.app -> (1) Get Info  (2) Show package contents -> Drag icon from package contents to icon area in info panel.
 
 # Features
 

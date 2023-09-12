@@ -23,11 +23,10 @@
 * 记得在 `设置`-`关于`-`访问授权码`，开启锁屏功能来得到更好的体验。
   * 锁屏页面是有背景音乐的，但是Chrome安全权限要求需要手动点击才能触发播放。
 * 明亮和黑暗模式根据当前时间变化(6点-18点为明亮主题)，遵循原神的模式而非思源的明亮和黑暗模式设置。
-* 该插件还会自动替换应用图标    
-  Mac由于图标缓存，不会立即生效，需要重启电脑。    
-  如果多次重启还是不生效，在terminal中输入以下命令来清空图标缓存(<b style='color:red'>危险操作，不到万不得已不要使用</b>):     
-  `sudo -S rm -rfv /Library/Caches/com.apple.iconservices.store && killall Dock && killall Finder`
-
+* 该插件支持自动替换应用图标    
+  MacOS由于图标缓存，有时即使重启电脑也不生效。建议手动替换图标：   
+  <img src="https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher/imgs/macIconReplace.png">
+  
 
 # 功能
 
