@@ -4,7 +4,7 @@
   "affectAllWarn": "This plugin replacing installation directory files and it will affect all workspaces!", 
   "replaceTitle": "Replace System Files", 
   "replaceSubtitle": "Replace the startup interface with the Genshin Launcher", 
-  "requireAdmin": "(Administrator permission required for Windows)", 
+  "requireAdmin": "(Administrator permission required for Windows, and will restart explorer for clear icon cache)", 
   "replaceBtn": "Replace", 
   "replaceBtnText": "Replaced", 
   "replaceBtnUpdate": "Update",
@@ -15,6 +15,7 @@
   "recoverBtnTitle1": "Reason: Complete backup for original resources not found, please reinstall SiYuan if need to recover", 
   "recoverBtnTitle2": "Reason: Already been the SiYuan default", 
   "reinstallInfo": "Reinstalling SiYuan can fully restore，adapted to v2.10.2，higher or lower version may have compatative problem, please report by Github Issue",
-  "activated": "Genshin, Start! Restart or lock Siyuan to see the effects",
-  "deactivated": "Genshin, Stop! Restart or lock Siyuan to see the effects"
+  "restartRequest": "Restart SiYuan",
+  "activated": "Genshin, Start!</br>Restart or lock Siyuan to see the effects",
+  "deactivated": "Genshin, Stop!</br>Restart or lock Siyuan to see the effects"
 }

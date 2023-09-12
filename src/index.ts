@@ -7,8 +7,8 @@ import {
     getBackend,
 } from "siyuan";
 import "./index.scss";
-// import * as waifujs from './l2d/waifu-tips.js';
-// import * as l2djs from './l2d/live2d_bundle';
+
+import { exitSiYuan } from "./api";
 
 const fs = (window as any).require('fs');
 
@@ -214,7 +214,13 @@ export default class PluginSample extends Plugin {
             }
         }
 
-        cmdStr = cmdStr.slice(0, -(spara.length+2));
+        if (this.os === 'windows') {
+            // need to refresh explorer to clear the icon cache
+            cmdStr += `ie4uinit.exe -show;` + 
+            `Get-Process -Name explorer | Stop-Process -Force;` +  `Start-Process explorer`
+        } else {
+            cmdStr = cmdStr.slice(0, -(spara.length+2));
+        }
 
         return cmdStr;
     }
@@ -232,16 +238,21 @@ export default class PluginSample extends Plugin {
                     if (f !== 'SiYuan.exe') {
                         cmdStr += `Move-Item -Path '${folder}.${f}' -Destination '${folder}${f}' -Force ${spara} `;
                     } else {
-                        // can not replace siyuan.exe directly when it is running,
-                        // but can rename current to new file, and delete it, and then rename old file to current.
-                        cmdStr += `Move-Item -Path '${folder}${f}' -Destination '${folder}..${f}' -Force ${spara} Move-Item -Path '${folder}.${f}' -Destination '${folder}${f}' -Force ${spara}`
+                        // rewrite / delete the exe current running is not possible
+                        // but rename to a new file works
+                        cmdStr += `Move-Item -Path '${folder}${f}' -Destination '${folder}..${f}' -Force ${spara} Move-Item -Path '${folder}.${f}' -Destination '${folder}${f}' -Force ${spara}`;
                     }
-                    
                 }
             }
         }
-        
-        cmdStr = cmdStr.slice(0, -(spara.length+2));
+
+        if (this.os === 'windows') {
+            // need to refresh explorer to clear the icon cache
+            cmdStr += `ie4uinit.exe -show;` + 
+            `Get-Process -Name explorer | Stop-Process -Force;` +  `Start-Process explorer`
+        } else {
+            cmdStr = cmdStr.slice(0, -(spara.length+2));
+        }
 
         return cmdStr;
     }
@@ -278,7 +289,7 @@ export default class PluginSample extends Plugin {
         var spawn_cmd:string;
         var spawn_param:{};
 
-        if (getBackend() === 'windows') {
+        if (this.os === 'windows') {
             spawn_cmd = `Start-Process powershell.exe -Verb runAs -ArgumentList \"-NoExit -Command ${cmdStr}\"`;
             spawn_param = {shell:"powershell.exe"};
         } else {
@@ -286,7 +297,7 @@ export default class PluginSample extends Plugin {
             spawn_param = {shell: true};
         }
 
-        const child = spawn(spawn_cmd, spawn_param,
+        const child = spawn(spawn_cmd, spawn_param, 
             (error: any, stdout: any, stderr: any) => {
                 if (error) {
                   console.error(`执行命令时出错：${error.toString()}`);
@@ -386,7 +397,7 @@ export default class PluginSample extends Plugin {
         }
 
         var spara: string = '';
-        if (getBackend() === 'windows') {
+        if (this.os === 'windows') {
             spara = ';'
         } else {
             spara = '&&'
@@ -424,10 +435,15 @@ export default class PluginSample extends Plugin {
 
             console.log(finCmdStr);
             this.execudeCMD(finCmdStr);
-
+            
             dialog.destroy();
 
-            showMessage(this.i18n.activated, 10000, "info")
+            // showMessage(this.i18n.activated, 10000, "info")
+            setTimeout(()=>{
+                confirm(this.i18n.restartRequest, this.i18n.activated, ()=>{
+                    exitSiYuan();
+                })
+            }, 3000);
         })
 
         recoverBtnElement.addEventListener("click", () => {
@@ -438,7 +454,12 @@ export default class PluginSample extends Plugin {
 
             dialog.destroy();
 
-            showMessage(this.i18n.deactivated, 10000, "info")
+            setTimeout(()=>{
+                confirm(this.i18n.restartRequest, this.i18n.deactivated, ()=>{
+                    exitSiYuan();
+                })
+            }, 3000);
+
         })
     }
 
