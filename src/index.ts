@@ -24,7 +24,9 @@ export default class PluginSample extends Plugin {
     private mvKeys: string[];
     private rnKeys: string[];
 
-    onload() {
+    async onload() {
+        await this.prepareWaifu();
+
         this.data[STORAGE_NAME] = {readonlyText: "Readonly"};
 
         const frontEnd = getFrontend();
@@ -61,7 +63,7 @@ export default class PluginSample extends Plugin {
             this.openSetting();
         }
 
-        await this.waifu();
+        this.addWaifuElement();
     }
 
     onunload() {
@@ -420,7 +422,7 @@ export default class PluginSample extends Plugin {
         return await res.json();
     }
 
-    public async waifu(){
+    public async prepareWaifu(){
         // unzip if model not exists
         const fs = (window as any).require('fs');
         
@@ -430,6 +432,24 @@ export default class PluginSample extends Plugin {
             console.log(res);
         }
 
+        // 添加<script>
+        // <script src="dist/live2d_bundle.js"></script>
+        // <script async type="module" src="waifu-tips.js"></script>
+        const live2d_bundle_js = document.createElement('script');
+        live2d_bundle_js.src = `./plugins/${pname}/l2d/live2d_bundle.js`;
+        live2d_bundle_js.async = true;
+        document.body.appendChild(live2d_bundle_js);
+
+
+        const waifu_tips_js = document.createElement('script');
+        waifu_tips_js.src = `./plugins/${pname}/l2d/waifu-tips.js`;
+        waifu_tips_js.type = 'module';
+        waifu_tips_js.async = true;
+        // waifu_tips_js.defer = true;
+        document.body.appendChild(waifu_tips_js);        
+    }
+
+    public addWaifuElement() {
         const waifuElement = document.createElement('div');
         waifuElement.id = "waifu";
 
@@ -452,21 +472,6 @@ export default class PluginSample extends Plugin {
 
         document.body.appendChild(waifuElement);
 
-        // 添加<script>
-        // <script src="dist/live2d_bundle.js"></script>
-        // <script async type="module" src="waifu-tips.js"></script>
-        const live2d_bundle_js = document.createElement('script');
-        live2d_bundle_js.src = `./plugins/${pname}/l2d/live2d_bundle.js`;
-        document.body.appendChild(live2d_bundle_js);
-
-        
-        const waifu_tips_js = document.createElement('script');
-        waifu_tips_js.src = `./plugins/${pname}/l2d/waifu-tips.js`;
-        waifu_tips_js.setAttribute('type', 'module');
-        waifu_tips_js.async = true;
-        
-        document.body.appendChild(waifu_tips_js);
-        
         // const waifujs = await import('./l2d/waifu-tips.js');
 
         // show model
