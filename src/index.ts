@@ -7,8 +7,8 @@ import {
     getBackend,
 } from "siyuan";
 import "./index.scss";
-// import * as waifujs from './l2d/waifu-tips.js';
-// import * as l2djs from './l2d/live2d_bundle';
+
+import { exitSiYuan } from "./api";
 
 const fs = (window as any).require('fs');
 
@@ -24,9 +24,10 @@ export default class PluginSample extends Plugin {
     private mvKeys: string[];
     private rnKeys: string[];
 
-    async onload() {
-        await this.prepareWaifu();
+    private dataDir: string;
+    private appDir: string;
 
+    onload() {
         this.data[STORAGE_NAME] = {readonlyText: "Readonly"};
 
         const frontEnd = getFrontend();
@@ -41,6 +42,13 @@ export default class PluginSample extends Plugin {
 </symbol>`);
 
         console.log(this.i18n.helloPlugin);
+
+        this.appDir = (window as any).siyuan.config.system.appDir;
+        this.dataDir = (window as any).siyuan.config.system.dataDir;
+        if ( this.os === 'windows'){
+            this.appDir = this.appDir.replaceAll('\\', '/');
+            this.dataDir = this.dataDir.replaceAll('\\', '/');
+        };
     }
 
     async onLayoutReady() {
@@ -71,54 +79,46 @@ export default class PluginSample extends Plugin {
     }
 
     public generatePath() {
-        
-        var appDir = (window as any).siyuan.config.system.appDir;
-        var dataDir = (window as any).siyuan.config.system.dataDir;
-        if ( this.os === 'windows'){
-            appDir = appDir.replaceAll('\\', '/');
-            dataDir = dataDir.replaceAll('\\', '/');
-        };
-
         var backupFiles = {
             // computed property [`...`]
-            [`${appDir}/app/electron/`]: 
+            [`${this.appDir}/app/electron/`]: 
                 ['boot.html', 'icon.png'],
-            [`${appDir}/appearance/boot/`]: 
+            [`${this.appDir}/appearance/boot/`]: 
                 ['index.html', 'icon.png'],
-            [`${appDir}/stage/`]: 
+            [`${this.appDir}/stage/`]: 
                 ['auth.html', 'icon.png', 'icon-large.png', 'loading.svg', 'loading-pure.svg'],
-            [`${appDir}/stage/build/app/`]: 
+            [`${this.appDir}/stage/build/app/`]: 
                 ['index.html']
         }
 
         var mvFiles: { [x: string]: any; } = {
-            [`${dataDir}/plugins/${pname}/source/appearance_index.html`]: 
-                [`${appDir}/appearance/boot/index.html`,
-                 `${appDir}/app/electron/boot.html`],
-            [`${dataDir}/plugins/${pname}/source/auth.html`]: 
-                [`${appDir}/stage/auth.html`],
-            [`${dataDir}/plugins/${pname}/source/build_app_index.html`]:
-                [`${appDir}/stage/build/app/index.html`],
-            [`${dataDir}/plugins/${pname}/source/icon.png`]: 
-                [`${appDir}/appearance/boot/icon.png`,
-                 `${appDir}/app/electron/icon.png`,
-                 `${appDir}/stage/icon.png`,
-                 `${appDir}/stage/icon-large.png`
+            [`${this.dataDir}/plugins/${pname}/source/appearance_index.html`]: 
+                [`${this.appDir}/appearance/boot/index.html`,
+                 `${this.appDir}/app/electron/boot.html`],
+            [`${this.dataDir}/plugins/${pname}/source/auth.html`]: 
+                [`${this.appDir}/stage/auth.html`],
+            [`${this.dataDir}/plugins/${pname}/source/build_app_index.html`]:
+                [`${this.appDir}/stage/build/app/index.html`],
+            [`${this.dataDir}/plugins/${pname}/source/icon.png`]: 
+                [`${this.appDir}/appearance/boot/icon.png`,
+                 `${this.appDir}/app/electron/icon.png`,
+                 `${this.appDir}/stage/icon.png`,
+                 `${this.appDir}/stage/icon-large.png`
                 ],
-            [`${dataDir}/plugins/${pname}/source/loading.svg`]: 
-                [`${appDir}/stage/loading.svg`],
-            [`${dataDir}/plugins/${pname}/source/loading-pure.svg`]: 
-                [`${appDir}/stage/loading-pure.svg`],
+            [`${this.dataDir}/plugins/${pname}/source/loading.svg`]: 
+                [`${this.appDir}/stage/loading.svg`],
+            [`${this.dataDir}/plugins/${pname}/source/loading-pure.svg`]: 
+                [`${this.appDir}/stage/loading-pure.svg`],
 
         }
 
         // icon files
         if ( this.os === 'windows'){
-    
+            backupFiles[`${this.appDir.replace('/resources', '/')}`] = ['SiYuan.exe'];
         };
         if ( this.os === 'darwin'){
-            backupFiles[`${appDir}/`] = ['icon.icns'];
-            mvFiles[`${dataDir}/plugins/${pname}/source/iconMac.icns`] = [`${appDir}/icon.icns`];
+            backupFiles[`${this.appDir}/`] = ['icon.icns'];
+            mvFiles[`${this.dataDir}/plugins/${pname}/source/iconMac.icns`] = [`${this.appDir}/icon.icns`];
         };
         
         return [backupFiles, mvFiles];
@@ -214,7 +214,13 @@ export default class PluginSample extends Plugin {
             }
         }
 
-        cmdStr = cmdStr.slice(0, -(spara.length+2));
+        if (this.os === 'windows') {
+            // need to refresh explorer to clear the icon cache
+            cmdStr += `ie4uinit.exe -show;` + 
+            `Get-Process -Name explorer | Stop-Process -Force;` +  `Start-Process explorer`
+        } else {
+            cmdStr = cmdStr.slice(0, -(spara.length+2));
+        }
 
         return cmdStr;
     }
@@ -229,23 +235,51 @@ export default class PluginSample extends Plugin {
                 if (spara == '&&') {  // unix system
                     cmdStr += `mv -f '${folder}.${f}' '${folder}${f}' ${spara} `;
                 } else { // powershell
-                    cmdStr += `mv '${folder}.${f}' '${folder}${f}' -Force ${spara} `;
+                    if (f !== 'SiYuan.exe') {
+                        cmdStr += `Move-Item -Path '${folder}.${f}' -Destination '${folder}${f}' -Force ${spara} `;
+                    } else {
+                        // rewrite / delete the exe current running is not possible
+                        // but rename to a new file works
+                        cmdStr += `Move-Item -Path '${folder}${f}' -Destination '${folder}..${f}' -Force ${spara} Move-Item -Path '${folder}.${f}' -Destination '${folder}${f}' -Force ${spara}`;
+                    }
                 }
-                
             }
         }
-        
-        cmdStr = cmdStr.slice(0, -(spara.length+2));
+
+        if (this.os === 'windows') {
+            // need to refresh explorer to clear the icon cache
+            cmdStr += `ie4uinit.exe -show;` + 
+            `Get-Process -Name explorer | Stop-Process -Force;` +  `Start-Process explorer`
+        } else {
+            cmdStr = cmdStr.slice(0, -(spara.length+2));
+        }
 
         return cmdStr;
     }
 
-    public clearCacheCMD() {
+    public clearMacCache() {
         if (this.os === 'windows') {
 
         } else if (this.os === 'darwin') {
             return 'sudo -S rm -rfv /Library/Caches/com.apple.iconservices.store && killall Dock && killall Finder'
         }
+    }
+
+    public replaceWinExeIconCMD() {
+        // .\cei.exe "D:\OneDrive\Program\GitHub\siyuan-genshin-launcher\projects\iconWin.ico" "C:\Program Files\SiYuan\SiYuan.exe" "C:\Program Files\SiYuan\SiYuan2.exe"
+
+        const ceiExeFile = `${this.dataDir}/plugins/${pname}/source/cei.exe`;
+        const icoFile = `${this.dataDir}/plugins/${pname}/source/iconWin.ico`
+        const siyuanExeFile = `${this.appDir.replace('/resources', '')}/.SiYuan.exe`;
+        const siyuanExeChangedFile = `${this.appDir.replace('/resources', '')}/SiYuan.exe`;
+
+        return `${ceiExeFile} '${icoFile}' '${siyuanExeFile}' '${siyuanExeChangedFile}'`
+    }
+
+    public replaceWinShortCut() {
+        // replace the exe icon
+
+        // replace short cut icon
     }
 
     public async execudeCMD(cmdStr:string){
@@ -255,7 +289,7 @@ export default class PluginSample extends Plugin {
         var spawn_cmd:string;
         var spawn_param:{};
 
-        if (getBackend() === 'windows') {
+        if (this.os === 'windows') {
             spawn_cmd = `Start-Process powershell.exe -Verb runAs -ArgumentList \"-NoExit -Command ${cmdStr}\"`;
             spawn_param = {shell:"powershell.exe"};
         } else {
@@ -263,7 +297,7 @@ export default class PluginSample extends Plugin {
             spawn_param = {shell: true};
         }
 
-        const child = spawn(spawn_cmd, spawn_param,
+        const child = spawn(spawn_cmd, spawn_param, 
             (error: any, stdout: any, stderr: any) => {
                 if (error) {
                   console.error(`执行命令时出错：${error.toString()}`);
@@ -283,7 +317,8 @@ export default class PluginSample extends Plugin {
             console.error(data.toString());
         });
     }
-    // 自定义设置
+
+
     public openSetting() {
         const dialog = new Dialog({
             title: this.i18n.helloPlugin,
@@ -362,7 +397,7 @@ export default class PluginSample extends Plugin {
         }
 
         var spara: string = '';
-        if (getBackend() === 'windows') {
+        if (this.os === 'windows') {
             spara = ';'
         } else {
             spara = '&&'
@@ -372,12 +407,14 @@ export default class PluginSample extends Plugin {
             const backupCmdStr = this.backupCMD(spara);
             const replaceCmdStr = this.replaceCMD(spara);
 
+            var finCmdStr: string;
+
             // 安装目录下的html没有备份文件
             if (!hasFullBackup) {
                 // 则先运行备份脚本，然后再进行替换
                 console.log(`click replace btn, execute the following command: Backup + Replace Siyuan files:\n${backupCmdStr} ${spara} ${replaceCmdStr}`);
 
-                this.execudeCMD(backupCmdStr + ` ${spara} ` + replaceCmdStr);
+                finCmdStr = backupCmdStr + ` ${spara} ` + replaceCmdStr;
 
              // 安装目录下的html有备份文件
             } else {
@@ -385,13 +422,28 @@ export default class PluginSample extends Plugin {
                 // 直接运行替换脚本
                 console.log(`click replace btn, execute the following command:\nReplace Siyuan files:\n${replaceCmdStr}`);
 
-                this.execudeCMD(replaceCmdStr);
+                finCmdStr = replaceCmdStr;
             }
 
+            // windows replace exe.ico
+            if (this.os === 'windows') {
+                const winChangeExeStr = this.replaceWinExeIconCMD();
+                console.log(`click replace btn, execute the following command:\nReplace Siyuan exe icon:\n${winChangeExeStr}`);
 
+                finCmdStr += ` ${spara} ` + winChangeExeStr;
+            }
+
+            console.log(finCmdStr);
+            this.execudeCMD(finCmdStr);
+            
             dialog.destroy();
 
-            showMessage(this.i18n.activated, 10000, "info")
+            // showMessage(this.i18n.activated, 10000, "info")
+            setTimeout(()=>{
+                confirm(this.i18n.restartRequest, this.i18n.activated, ()=>{
+                    exitSiYuan();
+                })
+            }, 3000);
         })
 
         recoverBtnElement.addEventListener("click", () => {
@@ -402,7 +454,12 @@ export default class PluginSample extends Plugin {
 
             dialog.destroy();
 
-            showMessage(this.i18n.deactivated, 10000, "info")
+            setTimeout(()=>{
+                confirm(this.i18n.restartRequest, this.i18n.deactivated, ()=>{
+                    exitSiYuan();
+                })
+            }, 3000);
+
         })
     }
 
