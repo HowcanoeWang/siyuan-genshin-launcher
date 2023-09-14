@@ -26,7 +26,7 @@ English | [简体中文](https://github.com/HowcanoeWang/siyuan-genshin-launcher
 * The plugin also has the capability to automatically replace the application icon.    
   However, on Mac, due to icon caching, the changes may not take effect immediately and even after restart.     
   Please manually replace the icon by the following step:    
-  <img src="https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher/imgs/macIconReplace.png">    
+  <img src="https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher@main/imgs/macIconReplace.png">    
   Applications -> SiYuan.app -> (1) Get Info  (2) Show package contents -> Drag icon from package contents to icon area in info panel.
 
 # Features

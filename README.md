@@ -25,7 +25,7 @@
 * 明亮和黑暗模式根据当前时间变化(6点-18点为明亮主题)，遵循原神的模式而非思源的明亮和黑暗模式设置。
 * 该插件支持自动替换应用图标    
   MacOS由于图标缓存，有时即使重启电脑也不生效。建议手动替换图标：   
-  <img src="https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher/imgs/macIconReplace.png">
+  <img src="https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher@main/imgs/macIconReplace.png">
   
 
 # 功能
