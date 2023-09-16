@@ -261,9 +261,7 @@ export default class PluginSample extends Plugin {
     }
 
     public clearMacCache() {
-        if (this.os === 'windows') {
-
-        } else if (this.os === 'darwin') {
+        if (this.os === 'darwin') {
             return 'sudo -S rm -rfv /Library/Caches/com.apple.iconservices.store && killall Dock && killall Finder'
         }
     }
@@ -315,6 +313,34 @@ export default class PluginSample extends Plugin {
         });
     }
 
+    public continueCheckFile(
+        fileDir: string, intervalId: number, 
+        isexist: boolean, notice:{[key: string]: string}
+    ) 
+    {
+        var finished = false;
+        var hasFile = fs.existsSync(fileDir);
+
+        if (isexist) {
+            // 直到文件存在
+            if (hasFile) {
+                finished = true
+            }
+        } else {
+            // 直到文件不存在
+            if (!hasFile) {
+                finished = true
+            }
+        }
+        
+        if (finished) {
+            clearInterval(intervalId);
+
+            confirm(notice['title'], notice['text'], ()=>{
+                exitSiYuan();
+            })
+        }
+    }
 
     public openSetting() {
         const dialog = new Dialog({
@@ -469,11 +495,24 @@ export default class PluginSample extends Plugin {
             dialog.destroy();
 
             // showMessage(this.i18n.activated, 10000, "info")
-            setTimeout(()=>{
-                confirm(this.i18n.restartRequest, this.i18n.activated, ()=>{
-                    exitSiYuan();
-                })
-            }, 3000);
+            // setTimeout(()=>{
+            //     confirm(this.i18n.restartRequest, this.i18n.activated, ()=>{
+            //         exitSiYuan();
+            //     })
+            // }, 3000);
+
+            // 等待执行完毕，弹出刷新对话框
+            var intervalId = setInterval( () => 
+                this.continueCheckFile(
+                    `${this.appDir}/stage/build/app/.index.html`,
+                    intervalId,
+                    true, // until found
+                    {
+                        'title': this.i18n.restartRequest,
+                        'text': this.i18n.activated
+                    }
+                ), 
+            1000);
         })
 
         recoverBtnElement.addEventListener("click", async () => {
@@ -487,11 +526,24 @@ export default class PluginSample extends Plugin {
 
             dialog.destroy();
 
-            setTimeout(()=>{
-                confirm(this.i18n.restartRequest, this.i18n.deactivated, ()=>{
-                    exitSiYuan();
-                })
-            }, 3000);
+            // setTimeout(()=>{
+            //     confirm(this.i18n.restartRequest, this.i18n.deactivated, ()=>{
+            //         exitSiYuan();
+            //     })
+            // }, 3000);
+
+            // 等待执行完毕，弹出刷新对话框
+            var intervalId = setInterval( () => 
+            this.continueCheckFile(
+                `${this.appDir}/stage/build/app/.index.html`,
+                intervalId,
+                false, // until not found
+                {
+                    'title': this.i18n.restartRequest,
+                    'text': this.i18n.deactivated
+                }
+            ), 
+            1000);
 
         })
 
