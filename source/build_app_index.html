@@ -16,7 +16,7 @@
         }
     </style>
     <script>
-        const fs = require('fs');
+        const fs = window.require('fs');
 
         const platform = navigator.platform.toLowerCase();
 
@@ -30,25 +30,34 @@
             console.log('unknown OS')
         }
 
-        fs.readdir(scanDir, (err, files) => {
-            if (err) {
-                console.error(err);
-            } else {
-                // console.log(files);
-                const mainJs = files.filter(file => file.startsWith('main'));
-                const baseCss = files.filter(file => file.startsWith('base'));
+        function fsReadDir(scanDir) {
+            fs.readdir(scanDir, (err, files) => {
+                if (err) {
+                    console.error(err);
+                    // windows starts, './' parse to 'C:/windows/system32/'
+                    if (scanDir === './resources/stage/build/app/') {
+                        fsReadDir('C:/Program Files/SiYuan/resources/stage/build/app/')
+                    }
+                } else {
+                    // console.log(files);
+                    const mainJs = files.filter(file => file.startsWith('main'));
+                    const baseCss = files.filter(file => file.startsWith('base'));
+    
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = baseCss;
+                    document.head.appendChild(link);
+    
+                    // 添加<script>
+                    const script = document.createElement('script');
+                    script.src = mainJs;
+                    document.head.appendChild(script);
+                }
+            });
+            
+        }
 
-                const link = document.createElement('link');
-                link.rel = 'stylesheet';
-                link.href = baseCss;
-                document.head.appendChild(link);
-
-                // 添加<script>
-                const script = document.createElement('script');
-                script.src = mainJs;
-                document.head.appendChild(script);
-            }
-        });
+        fsReadDir(scanDir);
     </script>
     <!-- <script defer="defer" src="main.1e7b2c2c5d76f49ec39a.js"></script>
     <link href="base.cad645cb32b600122082.css" rel="stylesheet"> -->
