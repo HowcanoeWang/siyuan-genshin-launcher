@@ -17,5 +17,7 @@
   "reinstallInfo": "Reinstalling SiYuan can fully restore，adapted to v2.10.2，higher or lower version may have compatative problem, please report by Github Issue",
   "restartRequest": "Restart SiYuan",
   "activated": "Genshin, Start!</br>Restart or lock Siyuan to see the effects",
-  "deactivated": "Genshin, Stop!</br>Restart or lock Siyuan to see the effects"
+  "deactivated": "Genshin, Stop!</br>Restart or lock Siyuan to see the effects",
+  "showWaifuTitle": "Show Paimon",
+  "showWaifuDes": "Display the Paimon assistant on your notebook. <span style='color:red'>Click the Paimon body will play sound, be careful in the working condition!</span>"
 }

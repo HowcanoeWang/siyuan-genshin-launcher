@@ -28,6 +28,8 @@ export default class PluginSample extends Plugin {
     private appDir: string;
 
     onload() {
+        this.prepareWaifu();
+
         this.data[STORAGE_NAME] = {readonlyText: "Readonly"};
 
         const frontEnd = getFrontend();
@@ -348,6 +350,14 @@ export default class PluginSample extends Plugin {
         <svg><use xlink:href="#iconUndo"></use></svg>${this.i18n.recoverBtn}
     </button>
 </label>
+<label class="fn__flex b3-label">
+    <div class="fn__flex-1">
+        ${this.i18n.showWaifuTitle}
+        <div class="b3-label__text">${this.i18n.showWaifuDes}</div>
+    </div>
+    <span class="fn__space"></span>
+    <input class="b3-switch fn__flex-center" id="waifuOnOff" type="checkbox">
+</label>
 `,
             width: this.isMobile ? "92vw" : "800px",
         });
@@ -461,6 +471,14 @@ export default class PluginSample extends Plugin {
             }, 3000);
 
         })
+
+        // $$('.waifu-tool .icon-cross').addEventListener('click', () => {
+        //     sessionStorage.setItem('waifuHide', '1');
+        //     window.setTimeout(function () {
+        //         waifu.classList.add('hide');
+        //         // document.getElementById('show-live2d').classList.remove('btnHide');
+        //     }, 1000);
+        // })
     }
 
     public async unzipPaimon() {

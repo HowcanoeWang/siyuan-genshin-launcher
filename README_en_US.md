@@ -35,7 +35,7 @@ English | [简体中文](https://github.com/HowcanoeWang/siyuan-genshin-launcher
 * [X] Lock screen page simulates Genshin Impact UI and changes with local time.
 * [X] Loading page with Genshin Impact loading icon.
 * [ ] Replace App Icon
-* [ ] Paimon as a virtual assistant.
+* [X] Paimon as a virtual assistant.
     * [ ] Provide OnOff in setting
     * [ ] Allow drag by mouse
     * [ ] Allow mute
