@@ -10,6 +10,7 @@ import "./index.scss";
 
 import { exitSiYuan } from "./api";
 import { configs } from './configs';
+import { info, debug, error } from './utils';
 import * as waifu from "./waifu";
 
 const fs = (window as any).require('fs');
@@ -36,13 +37,14 @@ export default class PluginSample extends Plugin {
         this.os = getBackend();
         this.isMobile = frontEnd === "mobile" || frontEnd === "browser-mobile";
 
-        console.log(this.i18n.helloPlugin);
+        info(this.i18n.helloPlugin);
 
         configs.setPlugin(this);
         await configs.load();
 
         window.waifuMute = configs.get('waifuMute');
         window.waifuAlreayInited = false;
+        window.waifuDebugSetting = configs.get('inDev');
 
         this.appDir = (window as any).siyuan.config.system.appDir;
         this.dataDir = (window as any).siyuan.config.system.dataDir;
@@ -54,7 +56,7 @@ export default class PluginSample extends Plugin {
 
     async onLayoutReady() {
         this.loadData(STORAGE_NAME);
-        console.log(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
+        info(`frontend: ${getFrontend()}; backend: ${getBackend()}`);
 
         [this.backupFiles, this.mvFiles] = this.generatePath();
 
@@ -76,7 +78,7 @@ export default class PluginSample extends Plugin {
     }
 
     onunload() {
-        console.log(this.i18n.byePlugin);
+        info(this.i18n.byePlugin);
     }
 
     public generatePath() {
@@ -150,7 +152,7 @@ export default class PluginSample extends Plugin {
     public hasBackupFiles(renameFiles: {[x: string]: string[];}) {
         // ensure all has ".index.html", '.icon.png', etc..
 
-        // console.log("hasBackupFiles", renameFiles)
+        debug(`[index.ts][hasBackupFiles]`, renameFiles)
 
         const rnKeys = Object.keys(renameFiles);
 
@@ -172,7 +174,7 @@ export default class PluginSample extends Plugin {
                     hasBackup += 1;
                 }
 
-                console.log(examFile, hasFile);
+                debug(`[index.ts][hasbackupFiles] has examFile: ${examFile}= ${hasFile}`);
             }
         }
 
@@ -181,7 +183,7 @@ export default class PluginSample extends Plugin {
         } else 
 
         // must keep this, otherwise will got undefined error
-        console.log('hasBackupFiles', has, hasBackup, totalFileNum);
+        info('[index.ts][hasbackupFiles]', has, hasBackup, totalFileNum);
 
         return [has, hasBackup, totalFileNum]
     }
@@ -295,21 +297,21 @@ export default class PluginSample extends Plugin {
         const child = spawn(spawn_cmd, spawn_param, 
             (error: any, stdout: any, stderr: any) => {
                 if (error) {
-                  console.error(`执行命令时出错：${error.toString()}`);
+                  error(`[index.ts][execudeCMD]执行命令时出错：${error.toString()}`);
                   return;
                 }
-                console.log(`命令输出：${stdout.toString()}`);
-                console.error(`错误输出：${stderr.toString()}`);
+                info(`[index.ts][execudeCMD]命令输出：\n${stdout.toString()}`);
+                error(`[index.ts][execudeCMD]错误输出：\n${stderr.toString()}`);
             }
         );
 
         // 监听子进程的 stdout 和 stderr 输出
         child.stdout.on('data', (data: any) => {
-            console.log(data.toString());
+            info(`[index.ts][execudeCMD]stdout：\n${data.toString()}`);
         });
         
         child.stderr.on('data', (data: any) => {
-            console.error(data.toString());
+            error(`[index.ts][execudeCMD]stderr：${data.toString()}`);
         });
     }
 
@@ -359,6 +361,21 @@ export default class PluginSample extends Plugin {
     <span class="fn__space"></span>
     <input class="b3-switch fn__flex-center" id="waifuMute" type="checkbox">
 </label>
+<label class="fn__flex b3-label config__item">
+<div class="fn__flex-1">
+    ${this.i18n.inDevModeLabel}
+    <div class="b3-label__text">
+        ${this.i18n.inDevModeDes}
+    </div>
+</div>
+<span class="fn__flex-center" />
+<input
+    id="devModeInput"
+    class="b3-switch fn__flex-center"
+    type="checkbox"
+    value="${configs.get('inDev')}"
+/>
+</label>
 `,
             width: this.isMobile ? "92vw" : "800px",
         });
@@ -370,13 +387,10 @@ export default class PluginSample extends Plugin {
         const pluginHtmlVersion = this.hasReplacedTag(this.mvKeys[0]);
         const appHtmlVersion = this.hasReplacedTag(this.rnKeys[0] + 'boot.html');
 
-        console.log(pluginHtmlVersion, appHtmlVersion)
+        debug(`[index.ts][openSetting] pluginHtmlVersion=${pluginHtmlVersion}, appHtmlVersion=${appHtmlVersion}`)
 
         const replaceBtnElement = document.getElementById('replaceBtn') as HTMLButtonElement;
         const recoverBtnElement = document.getElementById('recoverBtn') as HTMLButtonElement;
-        const waifuHideElement = document.getElementById('waifuHide') as HTMLInputElement;
-        const waifuMuteElement = document.getElementById('waifuMute') as HTMLInputElement;
-
 
         if (!appHtmlVersion) {
             // 安装目录/boot.html没有<meta genshin-launcher> tag
@@ -426,7 +440,7 @@ export default class PluginSample extends Plugin {
             // 安装目录下的html没有备份文件
             if (!hasFullBackup) {
                 // 则先运行备份脚本，然后再进行替换
-                console.log(`click replace btn, execute the following command: Backup + Replace Siyuan files:\n${backupCmdStr} ${spara} ${replaceCmdStr}`);
+                info(`[index.ts][openSetting] click replace btn, execute the following command: Backup + Replace Siyuan files:\n${backupCmdStr} ${spara} ${replaceCmdStr}`);
 
                 finCmdStr = backupCmdStr + ` ${spara} ` + replaceCmdStr;
 
@@ -434,7 +448,7 @@ export default class PluginSample extends Plugin {
             } else {
                 // 这种情况下，不需要进行备份(会把原本的思源备份给替换掉)
                 // 直接运行替换脚本
-                console.log(`click replace btn, execute the following command:\nReplace Siyuan files:\n${replaceCmdStr}`);
+                info(`[index.ts][openSetting] click replace btn, execute the following command:\nReplace Siyuan files:\n${replaceCmdStr}`);
 
                 finCmdStr = replaceCmdStr;
             }
@@ -442,12 +456,12 @@ export default class PluginSample extends Plugin {
             // windows replace exe.ico
             if (this.os === 'windows') {
                 const winChangeExeStr = this.replaceWinExeIconCMD();
-                console.log(`click replace btn, execute the following command:\nReplace Siyuan exe icon:\n${winChangeExeStr}`);
+                info(`[index.ts][openSetting] click replace btn, execute the following command:\nReplace Siyuan exe icon:\n${winChangeExeStr}`);
 
                 finCmdStr += ` ${spara} ` + winChangeExeStr;
             }
 
-            console.log(finCmdStr);
+            debug(`[index.ts][openSetting] final execude cmd ${finCmdStr}`);
             this.execudeCMD(finCmdStr);
             
             dialog.destroy();
@@ -462,7 +476,7 @@ export default class PluginSample extends Plugin {
 
         recoverBtnElement.addEventListener("click", () => {
             const restoreCmdStr = this.restoreCMD(spara);
-            console.log(`click recover btn, execute the following command: ${restoreCmdStr}`);
+            info(`[index.ts][openSetting] click recover btn, execute the following command: ${restoreCmdStr}`);
 
             this.execudeCMD(restoreCmdStr);
 
@@ -476,7 +490,9 @@ export default class PluginSample extends Plugin {
 
         })
 
-        // 即使之前没有设置过，waifuStatus也是false
+        // 看板娘相关设置
+        const waifuHideElement = document.getElementById('waifuHide') as HTMLInputElement;
+    
         let waifuStatus = configs.get('waifuHide');
         waifuHideElement.checked = waifuStatus;
         
@@ -487,10 +503,12 @@ export default class PluginSample extends Plugin {
         })
 
         // 看板娘静音设置
+        const waifuMuteElement = document.getElementById('waifuMute') as HTMLInputElement;
+
         let waifuMute = configs.get('waifuMute');
         waifuMuteElement.checked = waifuMute;
 
-        console.log(`config['waifuMute'] = ${configs.get('waifuMute')}; get waifuMute = ${waifuMute}; window.waifuMute = ${window.waifuMute};`)
+        debug(`[index.ts][openSetting] config['waifuMute'] = ${configs.get('waifuMute')}; get waifuMute = ${waifuMute}; window.waifuMute = ${window.waifuMute};`)
 
         waifuMuteElement.addEventListener('click', async () => {
             waifuMute = !waifuMute;
@@ -498,15 +516,21 @@ export default class PluginSample extends Plugin {
             window.waifuMute = waifuMute;
 
             configs.set('waifuMute', waifuMute);
-            await configs.save();
-
+            await configs.save(`[index][openSetting][waifuMute.change]`);
         })
-        // $$('.waifu-tool .icon-cross').addEventListener('click', () => {
-        //     sessionStorage.setItem('waifuHide', '1');
-        //     window.setTimeout(function () {
-        //         waifu.classList.add('hide');
-        //         // document.getElementById('show-live2d').classList.remove('btnHide');
-        //     }, 1000);
-        // })
+
+        // 开发者模式
+        const devModeElement = document.getElementById('devModeInput') as HTMLInputElement;
+        devModeElement.checked = configs.get('inDev');
+    
+        devModeElement.addEventListener("click", async () => {
+            configs.set('inDev', !configs.get('inDev'));
+            devModeElement.checked = configs.get('inDev');
+            window.waifuDebugSetting = configs.get('inDev');
+
+            await configs.save('[index][openSetting][devModeElement.change]');
+
+            location.reload();
+        })
     }
 }

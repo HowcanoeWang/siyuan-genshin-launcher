@@ -24,9 +24,9 @@ export async function prepareWaifu(){
     const fs = (window as any).require('fs');
     
     if (!fs.existsSync(`./plugins/${pname}/l2d/model/paimon/`)) {
-        console.log('unzip paimon.zip');
+        info('[waifu.ts][prepareWaifu] unzip paimon.zip');
         const res = await unzipPaimon();
-        console.log(res);
+        debug(`[waifu.ts][prepareWaifu] result`, res);
     }
 
     // 添加<script>
@@ -36,7 +36,6 @@ export async function prepareWaifu(){
     live2d_bundle_js.src = `./plugins/${pname}/l2d/live2d_bundle.js`;
     live2d_bundle_js.async = true;
     document.body.appendChild(live2d_bundle_js);
-
 
     const waifu_tips_js = document.createElement('script');
     waifu_tips_js.src = `./plugins/${pname}/l2d/waifu-tips.js`;
@@ -52,7 +51,7 @@ export function addWaifuElement(hide:boolean=false) {
     // 允许鼠标透过，传递点击事件
     waifuElement.style.setProperty('pointer-events', "none");
     if (hide) {
-        console.log(`Adding hide to Waifu Element`);
+        debug(`[waifu.ts][addWaifuElement] Adding hide to Waifu Element`);
         waifuElement.classList.add('hide');
         // sync to waifu.js setting
         sessionStorage.setItem('waifuHide', Number(hide).toString());
@@ -84,7 +83,7 @@ export function initWaifuElement() {
     // 即使之前没有设置过，获取一个null，waifuStatus也是false
     let waifuStatus = configs.get('waifuHide');
 
-    console.log(`config[waifuHide]=${configs.get('waifuHide')}, after reading got waifuStatus=${waifuStatus}`);
+    debug(`[waifu.ts][initWaifuElement] config[waifuHide]=${configs.get('waifuHide')}, after reading got waifuStatus=${waifuStatus}`);
 
     addWaifuElement(waifuStatus);
 
@@ -135,7 +134,7 @@ export async function setWaifuHide(status:boolean) {
     configs.set('waifuHide', status)
     sessionStorage.setItem('waifuHide', Number(status).toString());
 
-    console.log(`set SettingStorage["waifuHide"] = ${status}; set sessionStorage['waifuHide] = ${Number(status).toString()}`)
+    debug(`[waifu.ts][setWaifuHide] set SettingStorage["waifuHide"] = ${status}; set sessionStorage['waifuHide] = ${Number(status).toString()}`)
 
     if (status) {
         waifuElement.classList.add('hide');
@@ -146,9 +145,8 @@ export async function setWaifuHide(status:boolean) {
         // 已经初始化过了的，就不需要了再重载一遍了
         if (!window.waifuAlreayInited) {
             window.initModel();
-            window.waifuAlreayInited = true;
         }
     }
 
-    await configs.save();
+    await configs.save(`[waifu.ts][setWaifuHide][waifuHide.change]`);
 }

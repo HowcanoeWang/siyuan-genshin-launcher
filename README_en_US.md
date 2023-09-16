@@ -15,9 +15,11 @@ English | [简体中文](https://github.com/HowcanoeWang/siyuan-genshin-launcher
 * [X] Startup page simulates Genshin Impact UI.
 * [X] Lock screen page simulates Genshin Impact UI and changes with local time.
 * [X] Loading page with Genshin Impact loading icon.
-* [X] Replace App Icon
+* [X] Replace App Icon.
 * [X] Paimon as a virtual assistant.
-    * [ ] Provide OnOff in setting
+    * [x] Provide OnOff in setting.
+    * [x] Provide Mute option in setting.
+    * [x] Provide mouse penetration for clicking and other operations
 
 # Installation Notes
 
@@ -38,7 +40,7 @@ English | [简体中文](https://github.com/HowcanoeWang/siyuan-genshin-launcher
   <img src="https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher@main/imgs/macIconReplace.png">    
   Applications -> SiYuan.app -> (1) Get Info  (2) Show package contents -> Drag icon from package contents to icon area in info panel.
 * If the Windows client gets stuck on the loading screen after entering the authorization code (usually happens when SiYuan is first started after restarting Windows and the installation path is not the default `C:\Program Files\SiYUan\`), you can solve it by forcibly exiting it using the task manager and then restarting SiYuan.
-* The Paimon Assistant function is only for temporary use, and there are **NO** plans to provide more advanced customization options such as moving position or muting. Please look forward to the updates of the Waifu plugin for more comprehensive features.
+* The Paimon Assistant function is only for temporary use, and there are **NO** plans to provide more advanced customization options such as moving position or changing models. Please look forward to the updates of the Waifu plugin for more comprehensive features.
 
 # References
 

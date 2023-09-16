@@ -21,5 +21,7 @@
   "hideWaifuTitle": "Hide Paimon",
   "hideWaifuDes": "Not display the Paimon assistant on your notebook.",
   "muteWaifuTitle": "Mute Paimon",
-  "muteWaifuDes": "Click the Paimon head, hands, and body will play sound, <span style='color:red'>be careful in the working condition!</span>"
+  "muteWaifuDes": "Click the Paimon head, hands, and body will play sound, <span style='color:red'>be careful in the working condition!</span>",
+  "inDevModeLabel": "Developer mode",
+  "inDevModeDes": "Show more logs when open (debug log for waifu need refresh the siyuan note)"
 }
