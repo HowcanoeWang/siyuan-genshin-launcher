@@ -46,8 +46,9 @@ export async function prepareWaifu(){
 export function  addWaifuElement() {
     const waifuElement = document.createElement('div');
     waifuElement.id = "waifu";
+    waifuElement.style.setProperty('bottom', '50px');
     // 允许鼠标透过，传递点击事件
-    // waifuElement.style.setProperty('pointer-events', "none");
+    waifuElement.style.setProperty('pointer-events', "none");
 
     const waifuInnerHTML = `
         <div id="waifu-message" style="max-width:250px;overflow-wrap: break-word"></div>
@@ -62,7 +63,7 @@ export function  addWaifuElement() {
             <span class="icon-cross"></span>
         </div>
         <canvas id="live2d2"></canvas>
-        <canvas id="live2d4" style="bottom:50px;"></canvas>
+        <canvas id="live2d4" style="pointer-events: none;"></canvas>
     `
     waifuElement.innerHTML = waifuInnerHTML;
 
@@ -79,11 +80,58 @@ export function  addWaifuElement() {
 export function allowClickPass() {
     var canvas = document.getElementById("live2d4") as HTMLCanvasElement;
 
-    // try to use color to judge, failed.
+    document.addEventListener('click', (event) => {
+        var rect = canvas.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top;
+
+        if (x >=0 && y >= 0 && x < canvas.width && y < canvas.height) {
+            var clickEvent = new MouseEvent("click",  {
+                clientX: event.clientX, // 设置鼠标点击的 X 坐标
+                clientY: event.clientY, // 设置鼠标点击的 Y 坐标
+                screenX: event.screenX,
+                screenY: event.screenY
+                // 还可以设置其他鼠标事件属性，如 screenX、screenY、pageX、pageY 等
+              });
+            canvas.dispatchEvent(clickEvent);
+        }
+    })
+
+    document.addEventListener("mouseup", (event) => {
+        var rect = canvas.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top;
+
+        if (x >=0 && y >= 0 && x < canvas.width && y < canvas.height) {
+            var clickEvent = new MouseEvent("mouseup",  {
+                clientX: event.clientX, // 设置鼠标点击的 X 坐标
+                clientY: event.clientY, // 设置鼠标点击的 Y 坐标
+                screenX: event.screenX,
+                screenY: event.screenY
+                // 还可以设置其他鼠标事件属性，如 screenX、screenY、pageX、pageY 等
+              });
+            canvas.dispatchEvent(clickEvent);
+        }
+    });
+
+    // try to use color to judge
     // canvas.addEventListener("click", (event) => {
     //     var rect = canvas.getBoundingClientRect();
     //     var x = event.clientX - rect.left;
     //     var y = event.clientY - rect.top;
+
+    //     var alpha = transMask[Math.ceil(y)][Math.ceil(x)];
+
+    //     console.log(Math.ceil(x), Math.ceil(y), alpha);
+
+    //     if (alpha === 0) {
+    //         // 点击位置是透明的，传递事件给下一层元素
+    //         event.stopPropagation();
+
+    //         var clickEvent = new Event("click");
+    //         canvas.dispatchEvent(clickEvent);
+    //     }
+    // })
         
     //     var gl = canvas.getContext("webgl", {preserveDrawingBuffer: true});
 
@@ -107,11 +155,8 @@ export function allowClickPass() {
     //     // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     //     gl.readPixels(canvasX, canvasY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
 
-    //     console.log('aaaaaaaaaa', x, y, canvasX, canvasY, pixel);
-        
-    //     // if (pixel[3] === 0) {
-    //     //     // 点击位置是透明的，传递事件给下一层元素
-    //     //     event.stopPropagation();
-    //     // }
-    // });
+    // 或者另一种方式
+    // const blobDownload = (blob) => {console.log(blob)}
+    // canvas.toBlob(blobDownload) // >>> Blob {size: 3020, type: 'image/png'}
+    // 然后可以考虑把这个转换成mask，就能针对mask进行穿透了
 }
