@@ -10,6 +10,15 @@ English | [简体中文](https://github.com/HowcanoeWang/siyuan-genshin-launcher
 
 </div>
 
+# Features
+
+* [X] Startup page simulates Genshin Impact UI.
+* [X] Lock screen page simulates Genshin Impact UI and changes with local time.
+* [X] Loading page with Genshin Impact loading icon.
+* [X] Replace App Icon
+* [X] Paimon as a virtual assistant.
+    * [ ] Provide OnOff in setting
+
 # Installation Notes
 
 * <b style='color:red'>The copyright of the images, icons, music, and video clips used in this plugin belongs to miHoYo. This plugin is not an official feature of SiYuan Note, but was created by the plugin author for personal learning of front-end development. It is provided as teaching and learning purposes for plugin developers. All code and materials are publicly available for free, please do not use for other commercial purposes.</b>
@@ -28,18 +37,8 @@ English | [简体中文](https://github.com/HowcanoeWang/siyuan-genshin-launcher
   Please manually replace the icon by the following step:    
   <img src="https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher@main/imgs/macIconReplace.png">    
   Applications -> SiYuan.app -> (1) Get Info  (2) Show package contents -> Drag icon from package contents to icon area in info panel.
-
-# Features
-
-* [X] Startup page simulates Genshin Impact UI.
-* [X] Lock screen page simulates Genshin Impact UI and changes with local time.
-* [X] Loading page with Genshin Impact loading icon.
-* [ ] Replace App Icon
-* [X] Paimon as a virtual assistant.
-    * [ ] Provide OnOff in setting
-    * [ ] Allow drag by mouse
-    * [ ] Allow mute
-
+* If the Windows client gets stuck on the loading screen after entering the authorization code (usually happens when SiYuan is first started after restarting Windows and the installation path is not the default `C:\Program Files\SiYUan\`), you can solve it by forcibly exiting it using the task manager and then restarting SiYuan.
+* The Paimon Assistant function is only for temporary use, and there are **NO** plans to provide more advanced customization options such as moving position or muting. Please look forward to the updates of the Waifu plugin for more comprehensive features.
 
 # References
 

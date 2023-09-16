@@ -9,6 +9,7 @@ import {
 import "./index.scss";
 
 import { exitSiYuan } from "./api";
+import * as waifu from "./waifu";
 
 const fs = (window as any).require('fs');
 
@@ -28,7 +29,7 @@ export default class PluginSample extends Plugin {
     private appDir: string;
 
     onload() {
-        this.prepareWaifu();
+        waifu.prepareWaifu();
 
         this.data[STORAGE_NAME] = {readonlyText: "Readonly"};
 
@@ -73,7 +74,9 @@ export default class PluginSample extends Plugin {
             this.openSetting();
         }
 
-        this.addWaifuElement();
+        waifu.addWaifuElement();
+
+        waifu.allowClickPass();
     }
 
     onunload() {
@@ -480,79 +483,4 @@ export default class PluginSample extends Plugin {
         //     }, 1000);
         // })
     }
-
-    public async unzipPaimon() {
-        const wsDir = (window as any).siyuan.config.system.workspaceDir;
-        const modelFolder = `${wsDir}/data/plugins/${pname}/l2d/model/paimon/`;
-        const zipFile = `${wsDir}/data/plugins/${pname}/source/paimon.zip`
-
-        let res = await fetch("/api/archive/unzip", {
-            method: "POST",
-            // body: data,
-            body: JSON.stringify({
-                "path": modelFolder,
-                "zipPath": zipFile
-            })
-        });
-        return await res.json();
-    }
-
-    public async prepareWaifu(){
-        // unzip if model not exists
-        const fs = (window as any).require('fs');
-        
-        if (!fs.existsSync(`./plugins/${pname}/l2d/model/paimon/`)) {
-            console.log('unzip paimon.zip');
-            const res = await this.unzipPaimon();
-            console.log(res);
-        }
-
-        // 添加<script>
-        // <script src="dist/live2d_bundle.js"></script>
-        // <script async type="module" src="waifu-tips.js"></script>
-        const live2d_bundle_js = document.createElement('script');
-        live2d_bundle_js.src = `./plugins/${pname}/l2d/live2d_bundle.js`;
-        live2d_bundle_js.async = true;
-        document.body.appendChild(live2d_bundle_js);
-
-
-        const waifu_tips_js = document.createElement('script');
-        waifu_tips_js.src = `./plugins/${pname}/l2d/waifu-tips.js`;
-        waifu_tips_js.type = 'module';
-        waifu_tips_js.async = true;
-        // waifu_tips_js.defer = true;
-        document.body.appendChild(waifu_tips_js);        
-    }
-
-    public addWaifuElement() {
-        const waifuElement = document.createElement('div');
-        waifuElement.id = "waifu";
-
-        const waifuInnerHTML = `
-            <div id="waifu-message" style="max-width:250px;overflow-wrap: break-word"></div>
-            <div class="waifu-tool">
-                <span class="icon-next"></span>
-                <span class="icon-home"></span>
-                <span class="icon-message"></span>
-                <span class="icon-camera"></span>
-                <span class="icon-volumeup"></span>
-                <span class="icon-volumedown"></span>
-                <span class="icon-about"></span>
-                <span class="icon-cross"></span>
-            </div>
-            <canvas id="live2d2"></canvas>
-            <canvas id="live2d4"></canvas>
-        `
-        waifuElement.innerHTML = waifuInnerHTML;
-
-        document.body.appendChild(waifuElement);
-
-        // const waifujs = await import('./l2d/waifu-tips.js');
-
-        // show model
-        // sessionStorage.removeItem('waifuHide');
-        // document.getElementById('waifu').classList.remove('hide');
-        // waifujs.initModel();
-    }
-
 }
