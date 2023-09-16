@@ -23,5 +23,7 @@
   "muteWaifuTitle": "哑巴模式",
   "muteWaifuDes": "点击派蒙头、身体、手会播放不同的语音，<span style='color:red'>工作环境中小心社死！</span>",
   "inDevModeLabel": "开发者模式",
-  "inDevModeDes": "开启后将显示更多日志输出(看板娘debug日志需要刷新页面生效)"
+  "inDevModeDes": "开启后将显示更多日志输出(看板娘debug日志需要刷新页面生效)",
+  "batchTitle": "批处理",
+  "batchDes": "将会执行下述脚本，请确认\n\n"
 }

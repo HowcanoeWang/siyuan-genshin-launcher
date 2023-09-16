@@ -217,14 +217,6 @@ export default class PluginSample extends Plugin {
             }
         }
 
-        if (this.os === 'windows') {
-            // need to refresh explorer to clear the icon cache
-            cmdStr += `ie4uinit.exe -show;` + 
-            `Get-Process -Name explorer | Stop-Process -Force;` +  `Start-Process explorer`
-        } else {
-            cmdStr = cmdStr.slice(0, -(spara.length+2));
-        }
-
         return cmdStr;
     }
 
@@ -249,20 +241,19 @@ export default class PluginSample extends Plugin {
             }
         }
 
-        if (this.os === 'windows') {
-            // need to refresh explorer to clear the icon cache
-            cmdStr += `ie4uinit.exe -show;` + 
-            `Get-Process -Name explorer | Stop-Process -Force;` +  `Start-Process explorer`
-        } else {
-            cmdStr = cmdStr.slice(0, -(spara.length+2));
-        }
-
         return cmdStr;
     }
 
     public clearMacCache() {
         if (this.os === 'darwin') {
             return 'sudo -S rm -rfv /Library/Caches/com.apple.iconservices.store && killall Dock && killall Finder'
+        }
+    }
+
+    public clearWinCache() {
+        if (this.os === 'windows') {
+            return `ie4uinit.exe -show;` + 
+            `Get-Process -Name explorer | Stop-Process -Force;` +  `Start-Process explorer`
         }
     }
 
@@ -280,6 +271,14 @@ export default class PluginSample extends Plugin {
     public async execudeCMD(cmdStr:string){
         // const demoCMD = "cp 'C:\\Users\\hwang\\Desktop\\aaa.bmp' 'C:\\Program Files\\SiYuan\\resources\\aaa.bmp'"
         const spawn = (window as any).require('child_process').spawn;
+
+        // check if ends with spara ‘&&’ or ‘;’
+        if (cmdStr.replaceAll(' ', '').slice(-1) === ';') {
+            // '\\s*' 无视很多空格
+            cmdStr = cmdStr.replace(new RegExp('\\s*' + ';' + '\\s*' + '$'), '');
+        } else if (cmdStr.replaceAll(' ', '').slice(-2) === '&&') {
+            cmdStr = cmdStr.replace(new RegExp('\\s*' + '&&' + '\\s*' + '$'), '');
+        }
 
         var spawn_cmd:string;
         var spawn_param:{};
@@ -484,66 +483,84 @@ export default class PluginSample extends Plugin {
                 const winChangeExeStr = this.replaceWinExeIconCMD();
                 info(`[index.ts][openSetting] click replace btn, execute the following command:\nReplace Siyuan exe icon:\n${winChangeExeStr}`);
 
-                finCmdStr += ` ${spara} ` + winChangeExeStr;
+                const clearCacheStr = this.clearWinCache();
+
+                finCmdStr += winChangeExeStr + ` ${spara} ` + clearCacheStr;
             }
+
 
             await waifu.setWaifuHide(true);
 
             debug(`[index.ts][openSetting] final execude cmd ${finCmdStr}`);
-            this.execudeCMD(finCmdStr);
+
+            confirm(this.i18n.batchTitle, this.i18n.batchDes + `<pre style="font-size: 12px;">${
+                finCmdStr.replaceAll(/\s*&&\s*/g,  // 无视&&前后的空格，并添加回车
+                    '&&\n'
+                ).replaceAll(
+                    /\s*;\s*/g, // 无视;前后的空格，并添加回车
+                    ';\n')
+                }</pre>`, 
+            ()=>
+            {
+                this.execudeCMD(finCmdStr);
+                dialog.destroy();
+
+                // 等待执行完毕，弹出刷新对话框
+                var intervalId = setInterval( () => 
+                    this.continueCheckFile(
+                        `${this.appDir}/stage/build/app/.index.html`,
+                        intervalId,
+                        true, // until found
+                        {
+                            'title': this.i18n.restartRequest,
+                            'text': this.i18n.activated
+                        }
+                    ), 
+                1000);
+            })
             
-            dialog.destroy();
-
-            // showMessage(this.i18n.activated, 10000, "info")
-            // setTimeout(()=>{
-            //     confirm(this.i18n.restartRequest, this.i18n.activated, ()=>{
-            //         exitSiYuan();
-            //     })
-            // }, 3000);
-
-            // 等待执行完毕，弹出刷新对话框
-            var intervalId = setInterval( () => 
-                this.continueCheckFile(
-                    `${this.appDir}/stage/build/app/.index.html`,
-                    intervalId,
-                    true, // until found
-                    {
-                        'title': this.i18n.restartRequest,
-                        'text': this.i18n.activated
-                    }
-                ), 
-            1000);
         })
 
         recoverBtnElement.addEventListener("click", async () => {
             const restoreCmdStr = this.restoreCMD(spara);
-            info(`[index.ts][openSetting] click recover btn, execute the following command: ${restoreCmdStr}`);
+            var finCmdStr: string = restoreCmdStr;
+
+            if (this.os === 'windows') {
+                const clearCacheStr = this.clearWinCache();
+
+                finCmdStr += clearCacheStr;
+            }
 
             // close waifu
             await waifu.setWaifuHide(true);
 
-            this.execudeCMD(restoreCmdStr);
+            info(`[index.ts][openSetting] click recover btn, execute the following command: ${finCmdStr}`);
 
-            dialog.destroy();
+            confirm(this.i18n.batchTitle, this.i18n.batchDes + `<pre style="font-size: 12px;">${
+                finCmdStr.replaceAll(/\s*&&\s*/g,  // 无视&&前后的空格，并添加回车
+                    '&&\n'
+                ).replaceAll(
+                    /\s*;\s*/g, // 无视;前后的空格，并添加回车
+                    ';\n')
+                }</pre>`, 
+            ()=>
+            {
+                this.execudeCMD(finCmdStr);
+                dialog.destroy();
 
-            // setTimeout(()=>{
-            //     confirm(this.i18n.restartRequest, this.i18n.deactivated, ()=>{
-            //         exitSiYuan();
-            //     })
-            // }, 3000);
-
-            // 等待执行完毕，弹出刷新对话框
-            var intervalId = setInterval( () => 
-            this.continueCheckFile(
-                `${this.appDir}/stage/build/app/.index.html`,
-                intervalId,
-                false, // until not found
-                {
-                    'title': this.i18n.restartRequest,
-                    'text': this.i18n.deactivated
-                }
-            ), 
-            1000);
+                // 等待执行完毕，弹出刷新对话框
+                var intervalId = setInterval( () => 
+                this.continueCheckFile(
+                    `${this.appDir}/stage/build/app/.index.html`,
+                    intervalId,
+                    false, // until not found
+                    {
+                        'title': this.i18n.restartRequest,
+                        'text': this.i18n.deactivated
+                    }
+                ), 
+                1000);
+            })
 
         })
 

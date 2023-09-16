@@ -23,5 +23,7 @@
   "muteWaifuTitle": "Mute Paimon",
   "muteWaifuDes": "Click the Paimon head, hands, and body will play sound, <span style='color:red'>be careful in the working condition!</span>",
   "inDevModeLabel": "Developer mode",
-  "inDevModeDes": "Show more logs when open (debug log for waifu need refresh the siyuan note)"
+  "inDevModeDes": "Show more logs when open (debug log for waifu need refresh the siyuan note)",
+  "batchTitle": "Execute",
+  "batchDes": "Will execute the following commands, please confirm\n\n"
 }
