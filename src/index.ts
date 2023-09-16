@@ -431,7 +431,7 @@ export default class PluginSample extends Plugin {
             spara = '&&'
         }
 
-        replaceBtnElement.addEventListener("click", () => {
+        replaceBtnElement.addEventListener("click", async () => {
             const backupCmdStr = this.backupCMD(spara);
             const replaceCmdStr = this.replaceCMD(spara);
 
@@ -461,6 +461,8 @@ export default class PluginSample extends Plugin {
                 finCmdStr += ` ${spara} ` + winChangeExeStr;
             }
 
+            await waifu.setWaifuHide(true);
+
             debug(`[index.ts][openSetting] final execude cmd ${finCmdStr}`);
             this.execudeCMD(finCmdStr);
             
@@ -474,9 +476,12 @@ export default class PluginSample extends Plugin {
             }, 3000);
         })
 
-        recoverBtnElement.addEventListener("click", () => {
+        recoverBtnElement.addEventListener("click", async () => {
             const restoreCmdStr = this.restoreCMD(spara);
             info(`[index.ts][openSetting] click recover btn, execute the following command: ${restoreCmdStr}`);
+
+            // close waifu
+            await waifu.setWaifuHide(true);
 
             this.execudeCMD(restoreCmdStr);
 
