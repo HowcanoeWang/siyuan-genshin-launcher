@@ -56,6 +56,8 @@ export function addWaifuElement(hide:boolean=false) {
         waifuElement.classList.add('hide');
         // sync to waifu.js setting
         sessionStorage.setItem('waifuHide', Number(hide).toString());
+    } else {
+        window.waifuAlreayInited = true;
     }
 
     const waifuInnerHTML = `
@@ -76,21 +78,11 @@ export function addWaifuElement(hide:boolean=false) {
     waifuElement.innerHTML = waifuInnerHTML;
 
     document.body.appendChild(waifuElement);
-
-    console.log(waifuElement);
-
-    // const waifujs = await import('./l2d/waifu-tips.js');
-
-    // show model
-    // sessionStorage.removeItem('waifuHide');
-    // document.getElementById('waifu').classList.remove('hide');
-    // waifujs.initModel();
-    
 }
 
 export function initWaifuElement() {
     // 即使之前没有设置过，获取一个null，waifuStatus也是false
-    let waifuStatus = (configs.get('waifuHide') === 'true');
+    let waifuStatus = configs.get('waifuHide');
 
     console.log(`config[waifuHide]=${configs.get('waifuHide')}, after reading got waifuStatus=${waifuStatus}`);
 
@@ -135,58 +127,12 @@ export function allowClickPass() {
             canvas.dispatchEvent(clickEvent);
         }
     });
-
-    // try to use color to judge
-    // canvas.addEventListener("click", (event) => {
-    //     var rect = canvas.getBoundingClientRect();
-    //     var x = event.clientX - rect.left;
-    //     var y = event.clientY - rect.top;
-
-    //     var alpha = transMask[Math.ceil(y)][Math.ceil(x)];
-
-    //     console.log(Math.ceil(x), Math.ceil(y), alpha);
-
-    //     if (alpha === 0) {
-    //         // 点击位置是透明的，传递事件给下一层元素
-    //         event.stopPropagation();
-
-    //         var clickEvent = new Event("click");
-    //         canvas.dispatchEvent(clickEvent);
-    //     }
-    // })
-        
-    //     var gl = canvas.getContext("webgl", {preserveDrawingBuffer: true});
-
-    //     var canvasX = x;
-    //     var canvasY = canvas.height - y;
-
-    //     // 创建一个用于存储像素颜色的数组
-    //     var pixel = new Uint8Array(4);
-
-    //      // 读取鼠标点击处的像素颜色
-    //     // gl.readPixels(canvasX, canvasY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
-    //     // gl.clear(gl.COLOR_BUFFER_BIT);
-    //     var framebuffer = gl.createFramebuffer();
-    //     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-
-    //     var texture = gl.createTexture();
-    //     gl.bindTexture(gl.TEXTURE_2D, texture);
-    //     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    //     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-
-    //     // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    //     gl.readPixels(canvasX, canvasY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
-
-    // 或者另一种方式
-    // const blobDownload = (blob) => {console.log(blob)}
-    // canvas.toBlob(blobDownload) // >>> Blob {size: 3020, type: 'image/png'}
-    // 然后可以考虑把这个转换成mask，就能针对mask进行穿透了
 }
 
 export async function setWaifuHide(status:boolean) {
     let waifuElement = document.getElementById('waifu');
 
-    configs.set('waifuHide', status.toString())
+    configs.set('waifuHide', status)
     sessionStorage.setItem('waifuHide', Number(status).toString());
 
     console.log(`set SettingStorage["waifuHide"] = ${status}; set sessionStorage['waifuHide] = ${Number(status).toString()}`)
@@ -195,7 +141,13 @@ export async function setWaifuHide(status:boolean) {
         waifuElement.classList.add('hide');
     } else {
         waifuElement.classList.remove('hide');
-        window.initModel();
+        // 如果一开始启动的时候addWaifuElement(hide=true)
+        //    模型不显示，则需要重新初始化
+        // 已经初始化过了的，就不需要了再重载一遍了
+        if (!window.waifuAlreayInited) {
+            window.initModel();
+            window.waifuAlreayInited = true;
+        }
     }
 
     await configs.save();

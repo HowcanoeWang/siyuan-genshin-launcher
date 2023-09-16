@@ -21,5 +21,5 @@
   "hideWaifuTitle": "Hide Paimon",
   "hideWaifuDes": "Not display the Paimon assistant on your notebook.",
   "muteWaifuTitle": "Mute Paimon",
-  "muteWaifuDes": "<span style='color:red'>Click the Paimon body will play sound, be careful in the working condition!</span>"
+  "muteWaifuDes": "Click the Paimon head, hands, and body will play sound, <span style='color:red'>be careful in the working condition!</span>"
 }

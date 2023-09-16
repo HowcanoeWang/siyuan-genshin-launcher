@@ -3574,6 +3574,7 @@
                         var i = this;
                         if (/(\.mp3|\.aac|\.m4a|\.opus|\.ogg|\.caf|\.wav|\.webm|\.flac|\.mp4)$/i.test(t)) {
                             var a = new Audio;
+                            a.muted = window.waifuMute;
                             a.src = t, a.autoplay = !0, setTimeout((function() {
                                 a.play().then((function() {
                                     return i._debugMode && console.log("[Live2Dv4] play sound: " + t + " delay: " + e)

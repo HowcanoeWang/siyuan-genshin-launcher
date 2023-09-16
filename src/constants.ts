@@ -1,7 +1,8 @@
 declare global {
     interface Window { 
-        waifuMute : true,
+        waifuMute : Boolean,
         initModel: Function;
+        waifuAlreayInited: Boolean;
     }
 }
 

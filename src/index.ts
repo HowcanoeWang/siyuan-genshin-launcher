@@ -40,7 +40,10 @@ export default class PluginSample extends Plugin {
 
         configs.setPlugin(this);
         await configs.load();
-        
+
+        window.waifuMute = configs.get('waifuMute');
+        window.waifuAlreayInited = false;
+
         this.appDir = (window as any).siyuan.config.system.appDir;
         this.dataDir = (window as any).siyuan.config.system.dataDir;
         if ( this.os === 'windows'){
@@ -372,6 +375,7 @@ export default class PluginSample extends Plugin {
         const replaceBtnElement = document.getElementById('replaceBtn') as HTMLButtonElement;
         const recoverBtnElement = document.getElementById('recoverBtn') as HTMLButtonElement;
         const waifuHideElement = document.getElementById('waifuHide') as HTMLInputElement;
+        const waifuMuteElement = document.getElementById('waifuMute') as HTMLInputElement;
 
 
         if (!appHtmlVersion) {
@@ -473,7 +477,7 @@ export default class PluginSample extends Plugin {
         })
 
         // 即使之前没有设置过，waifuStatus也是false
-        let waifuStatus = (configs.get('waifuHide') === 'true');
+        let waifuStatus = configs.get('waifuHide');
         waifuHideElement.checked = waifuStatus;
         
         waifuHideElement.addEventListener('click', async () => {
@@ -482,7 +486,21 @@ export default class PluginSample extends Plugin {
             await waifu.setWaifuHide(waifuStatus);
         })
 
+        // 看板娘静音设置
+        let waifuMute = configs.get('waifuMute');
+        waifuMuteElement.checked = waifuMute;
 
+        console.log(`config['waifuMute'] = ${configs.get('waifuMute')}; get waifuMute = ${waifuMute}; window.waifuMute = ${window.waifuMute};`)
+
+        waifuMuteElement.addEventListener('click', async () => {
+            waifuMute = !waifuMute;
+            waifuMuteElement.checked = waifuMute;
+            window.waifuMute = waifuMute;
+
+            configs.set('waifuMute', waifuMute);
+            await configs.save();
+
+        })
         // $$('.waifu-tool .icon-cross').addEventListener('click', () => {
         //     sessionStorage.setItem('waifuHide', '1');
         //     window.setTimeout(function () {
