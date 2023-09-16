@@ -489,7 +489,7 @@ export default class PluginSample extends Plugin {
             }
 
 
-            await waifu.setWaifuHide(true);
+            await waifu.setWaifuHide(false);
 
             debug(`[index.ts][openSetting] final execude cmd ${finCmdStr}`);
 
