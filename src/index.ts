@@ -456,7 +456,7 @@ export default class PluginSample extends Plugin {
             spara = '&&'
         }
 
-        replaceBtnElement.addEventListener("click", async () => {
+        replaceBtnElement.addEventListener("click", () => {
             const backupCmdStr = this.backupCMD(spara);
             const replaceCmdStr = this.replaceCMD(spara);
 
@@ -488,9 +488,6 @@ export default class PluginSample extends Plugin {
                 finCmdStr += winChangeExeStr + ` ${spara} ` + clearCacheStr;
             }
 
-
-            await waifu.setWaifuHide(false);
-
             debug(`[index.ts][openSetting] final execude cmd ${finCmdStr}`);
 
             confirm(this.i18n.batchTitle, this.i18n.batchDes + `<pre style="font-size: 12px;">${
@@ -500,7 +497,7 @@ export default class PluginSample extends Plugin {
                     /\s*;\s*/g, // 无视;前后的空格，并添加回车
                     ';\n')
                 }</pre>`, 
-            ()=>
+            async ()=>
             {
                 this.execudeCMD(finCmdStr);
                 dialog.destroy();
@@ -517,11 +514,17 @@ export default class PluginSample extends Plugin {
                         }
                     ), 
                 1000);
+
+                // mute the sound of waifu
+                window.waifuMute = true;
+                configs.set('waifuMute', true);
+                // show waifu
+                await waifu.setWaifuHide(false);
             })
             
         })
 
-        recoverBtnElement.addEventListener("click", async () => {
+        recoverBtnElement.addEventListener("click", () => {
             const restoreCmdStr = this.restoreCMD(spara);
             var finCmdStr: string = restoreCmdStr;
 
@@ -530,9 +533,6 @@ export default class PluginSample extends Plugin {
 
                 finCmdStr += clearCacheStr;
             }
-
-            // close waifu
-            await waifu.setWaifuHide(true);
 
             info(`[index.ts][openSetting] click recover btn, execute the following command: ${finCmdStr}`);
 
@@ -543,7 +543,7 @@ export default class PluginSample extends Plugin {
                     /\s*;\s*/g, // 无视;前后的空格，并添加回车
                     ';\n')
                 }</pre>`, 
-            ()=>
+            async ()=>
             {
                 this.execudeCMD(finCmdStr);
                 dialog.destroy();
@@ -560,6 +560,9 @@ export default class PluginSample extends Plugin {
                     }
                 ), 
                 1000);
+
+                // close waifu
+                await waifu.setWaifuHide(true);
             })
 
         })
