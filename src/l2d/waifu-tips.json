@@ -17,12 +17,12 @@
             "default": ["嗨~ 快来逗我玩吧！"]
         },
         "referrer_message": {
-            "localhost": ["欢迎阅读<span style=\"color:DarkBlue;\">『", "』</span>", " - "],
+            "localhost": ["正在阅读<span style=\"color:DarkBlue;\">『", "』</span>", " - "],
             "baidu": ["Hello! 来自 百度搜索 的朋友<br>你是搜索 <span style=\"color:DarkBlue;\">", "</span> 找到的我吗？"],
             "so": ["Hello! 来自 360搜索 的朋友<br>你是搜索 <span style=\"color:DarkBlue;\">", "</span> 找到的我吗？"],
             "google": ["Hello! 来自 谷歌搜索 的朋友<br>欢迎阅读<span style=\"color:DarkBlue;\">『", "』</span>", " - "],
             "default": ["Hello! 来自 <span style=\"color:DarkBlue;\">", "</span> 的朋友"],
-            "none": ["欢迎阅读<span style=\"color:DarkBlue;\">『", "』</span>", " - "]
+            "none": ["正在阅读<span style=\"color:DarkBlue;\">『", "』</span>", " - "]
         },
         "referrer_hostname": {
             "note6.konata.tech": ["果然还是离不开我吧^_^"],

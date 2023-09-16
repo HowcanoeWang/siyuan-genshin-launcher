@@ -18,6 +18,8 @@
   "restartRequest": "重启思源",
   "activated": "源神已启动，重启思源或锁屏以查看效果",
   "deactivated": "源神已卸载，重启思源或锁屏以查看效果",
-  "showWaifuTitle": "显示派蒙看板娘",
-  "showWaifuDes": "在笔记本中显示派蒙看板娘。<span style='color:red'>点击派蒙身体会播放声音，工作环境中谨防社死！</span>"
+  "hideWaifuTitle": "隐藏派蒙看板娘",
+  "hideWaifuDes": "在笔记本中隐藏派蒙看板娘",
+  "muteWaifuTitle": "哑巴模式",
+  "muteWaifuDes": "<span style='color:red'>点击派蒙身体会播放声音，工作环境中谨防社死！</span>"
 }

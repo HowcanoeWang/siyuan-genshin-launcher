@@ -1,3 +1,6 @@
+import { configs } from "./configs";
+import { info, debug, error } from "./utils";
+
 const pname = 'siyuan-genshin-launcher';
 
 export async function unzipPaimon() {
@@ -43,12 +46,17 @@ export async function prepareWaifu(){
     document.body.appendChild(waifu_tips_js);        
 }
 
-export function  addWaifuElement() {
+export function addWaifuElement(hide:boolean=false) {
     const waifuElement = document.createElement('div');
     waifuElement.id = "waifu";
-    waifuElement.style.setProperty('bottom', '50px');
     // 允许鼠标透过，传递点击事件
     waifuElement.style.setProperty('pointer-events', "none");
+    if (hide) {
+        console.log(`Adding hide to Waifu Element`);
+        waifuElement.classList.add('hide');
+        // sync to waifu.js setting
+        sessionStorage.setItem('waifuHide', Number(hide).toString());
+    }
 
     const waifuInnerHTML = `
         <div id="waifu-message" style="max-width:250px;overflow-wrap: break-word"></div>
@@ -69,12 +77,26 @@ export function  addWaifuElement() {
 
     document.body.appendChild(waifuElement);
 
+    console.log(waifuElement);
+
     // const waifujs = await import('./l2d/waifu-tips.js');
 
     // show model
     // sessionStorage.removeItem('waifuHide');
     // document.getElementById('waifu').classList.remove('hide');
     // waifujs.initModel();
+    
+}
+
+export function initWaifuElement() {
+    // 即使之前没有设置过，获取一个null，waifuStatus也是false
+    let waifuStatus = (configs.get('waifuHide') === 'true');
+
+    console.log(`config[waifuHide]=${configs.get('waifuHide')}, after reading got waifuStatus=${waifuStatus}`);
+
+    addWaifuElement(waifuStatus);
+
+    allowClickPass();
 }
 
 export function allowClickPass() {
@@ -159,4 +181,22 @@ export function allowClickPass() {
     // const blobDownload = (blob) => {console.log(blob)}
     // canvas.toBlob(blobDownload) // >>> Blob {size: 3020, type: 'image/png'}
     // 然后可以考虑把这个转换成mask，就能针对mask进行穿透了
+}
+
+export async function setWaifuHide(status:boolean) {
+    let waifuElement = document.getElementById('waifu');
+
+    configs.set('waifuHide', status.toString())
+    sessionStorage.setItem('waifuHide', Number(status).toString());
+
+    console.log(`set SettingStorage["waifuHide"] = ${status}; set sessionStorage['waifuHide] = ${Number(status).toString()}`)
+
+    if (status) {
+        waifuElement.classList.add('hide');
+    } else {
+        waifuElement.classList.remove('hide');
+        window.initModel();
+    }
+
+    await configs.save();
 }
