@@ -80,6 +80,10 @@ export default class PluginSample extends Plugin {
                 this.openSetting();
             }, 3000);
         }
+
+        // var userProfilePath = process.env.USERPROFILE;
+        // userProfilePath  = userProfilePath .replaceAll('\\', '/');
+        // this.execudeCMD(`Remove-Item -Path '${userProfilePath}/AppData/Local/Microsoft/Windows/Explorer/iconcache_*.db' -Force;`)
     }
 
     onunload() {
@@ -257,8 +261,13 @@ export default class PluginSample extends Plugin {
 
     public clearWinCache() {
         if (this.os === 'windows') {
-            return `ie4uinit.exe -show;` + 
-            `Get-Process -Name explorer | Stop-Process -Force;` +  `Start-Process explorer`
+            var userProfilePath = process.env.USERPROFILE;
+            userProfilePath  = userProfilePath .replaceAll('\\', '/');
+            return `attrib -h ${userProfilePath}/AppData/Local/Microsoft/Windows/Explorer/thumbcache_*.db;` +
+            `Remove-Item -Path '${userProfilePath}/AppData/Local/Microsoft/Windows/Explorer/thumbcache_*.db' -Force;` +
+            `attrib -h ${userProfilePath}/AppData/Local/Microsoft/Windows/Explorer/iconcache_*.db;` +
+            `Remove-Item -Path '${userProfilePath}/AppData/Local/Microsoft/Windows/Explorer/iconcache_*.db' -Force;` +
+            `Get-Process -Name explorer | Stop-Process -Force;`
         }
     }
 
