@@ -19,7 +19,7 @@ export async function unzipPaimon() {
     return await res.json();
 }
 
-export async function prepareWaifu(){
+export async function prepareWaifuModel(){
     // unzip if model not exists
     const fs = (window as any).require('fs');
     
@@ -27,8 +27,10 @@ export async function prepareWaifu(){
         info('[waifu.ts][prepareWaifu] unzip paimon.zip');
         const res = await unzipPaimon();
         debug(`[waifu.ts][prepareWaifu] result`, res);
-    }
+    }  
+}
 
+export async function loadWaifuJs() {
     // 添加<script>
     // <script src="dist/live2d_bundle.js"></script>
     // <script async type="module" src="waifu-tips.js"></script>
@@ -42,7 +44,7 @@ export async function prepareWaifu(){
     waifu_tips_js.type = 'module';
     waifu_tips_js.async = true;
     // waifu_tips_js.defer = true;
-    document.body.appendChild(waifu_tips_js);        
+    document.body.appendChild(waifu_tips_js);      
 }
 
 export function addWaifuElement(hide:boolean=false) {
@@ -85,9 +87,11 @@ export function initWaifuElement() {
 
     debug(`[waifu.ts][initWaifuElement] config[waifuHide]=${configs.get('waifuHide')}, after reading got waifuStatus=${waifuStatus}`);
 
-    addWaifuElement(waifuStatus);
-
-    allowClickPass();
+    if (!waifuStatus) {
+        addWaifuElement(waifuStatus);
+        loadWaifuJs();
+        allowClickPass();
+    }
 }
 
 export function allowClickPass() {
@@ -129,23 +133,31 @@ export function allowClickPass() {
 }
 
 export async function setWaifuHide(status:boolean) {
-    let waifuElement = document.getElementById('waifu');
-
     configs.set('waifuHide', status)
     sessionStorage.setItem('waifuHide', Number(status).toString());
-
+    
     debug(`[waifu.ts][setWaifuHide] set SettingStorage["waifuHide"] = ${status}; set sessionStorage['waifuHide] = ${Number(status).toString()}`)
+    
+    let waifuElement = document.getElementById('waifu');
 
-    if (status) {
-        waifuElement.classList.add('hide');
-    } else {
-        waifuElement.classList.remove('hide');
-        // 如果一开始启动的时候addWaifuElement(hide=true)
-        //    模型不显示，则需要重新初始化
-        // 已经初始化过了的，就不需要了再重载一遍了
-        if (!window.waifuAlreayInited) {
-            window.initModel();
+    if (waifuElement) {
+        // 已经加载过
+        if (status) {
+            waifuElement.classList.add('hide');
+        } else {
+            waifuElement.classList.remove('hide');
+            // 如果一开始启动的时候addWaifuElement(hide=true)
+            //    模型不显示，则需要重新初始化
+            // 已经初始化过了的，就不需要了再重载一遍了
+            if (!window.waifuAlreayInited) {
+                window.initModel();
+            }
         }
+    } else {
+        // 完全没加载过
+        addWaifuElement(status);
+        loadWaifuJs();
+        allowClickPass();
     }
 
     await configs.save(`[waifu.ts][setWaifuHide][waifuHide.change]`);

@@ -31,7 +31,7 @@ export default class PluginSample extends Plugin {
     private appDir: string;
 
     async onload() {
-        waifu.prepareWaifu();
+        waifu.prepareWaifuModel();
 
         const frontEnd = getFrontend();
         this.os = getBackend();
@@ -70,11 +70,16 @@ export default class PluginSample extends Plugin {
         const pluginHtmlVersion = this.hasReplacedTag(this.mvKeys[0]);
         const appHtmlVersion = this.hasReplacedTag(this.rnKeys[0] + 'boot.html');
 
-        if (!hasFullBackup || appHtmlVersion < pluginHtmlVersion) {
-            this.openSetting();
-        }
-
+        // setTimeout(() => {
+        //     waifu.initWaifuElement();
+        // }, 5000);
         waifu.initWaifuElement();
+
+        if (!hasFullBackup || appHtmlVersion < pluginHtmlVersion) {
+            setTimeout(() => {
+                this.openSetting();
+            }, 3000);
+        }
     }
 
     onunload() {
