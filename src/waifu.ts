@@ -52,6 +52,7 @@ export function addWaifuElement(hide:boolean=false) {
     waifuElement.id = "waifu";
     // 允许鼠标透过，传递点击事件
     waifuElement.style.setProperty('pointer-events', "none");
+    waifuElement.style.setProperty('position', "fixed");
     if (hide) {
         debug(`[waifu.ts][addWaifuElement] Adding hide to Waifu Element`);
         waifuElement.classList.add('hide');
