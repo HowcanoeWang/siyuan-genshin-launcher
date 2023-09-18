@@ -2,7 +2,7 @@
   "name": "siyuan-genshin-launcher",
   "author": "HowcanoeWang",
   "url": "https://github.com/HowcanoeWang/siyuan-genshin-launcher",
-  "version": "4.0.2",
+  "version": "4.1.0",
   "minAppVersion": "2.10.2",
   "backends": ["windows", "darwin"],
   "frontends": ["desktop"],
