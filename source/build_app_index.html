@@ -33,7 +33,7 @@
         function fsReadDir(scanDir) {
             fs.readdir(scanDir, (err, files) => {
                 if (err) {
-                    console.error(err);
+                    console.warn(`[Genshin Plugin][build/app/index.html] Catch up the error ${err}, this is caused by windows parse './' relative path to abs path 'C:/windows/system32/', try to use abspath 'C:/Program Files/SiYuan/resources/stage/build/app/' instead`);
                     // windows starts, './' parse to 'C:/windows/system32/'
                     if (scanDir === './resources/stage/build/app/') {
                         fsReadDir('C:/Program Files/SiYuan/resources/stage/build/app/')

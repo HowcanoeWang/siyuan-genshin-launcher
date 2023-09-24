@@ -31,7 +31,7 @@ export default class PluginSample extends Plugin {
     private appDir: string;
 
     async onload() {
-        waifu.prepareWaifuModel();
+        waifu.preparePaimonModel();
 
         const frontEnd = getFrontend();
         this.os = getBackend();
@@ -517,7 +517,7 @@ export default class PluginSample extends Plugin {
                 dialog.destroy();
 
                 // 等待执行完毕，弹出刷新对话框
-                var intervalId = setInterval( () => 
+                var intervalId:any = setInterval( () => 
                     this.continueCheckFile(
                         `${this.appDir}/stage/build/app/.index.html`,
                         intervalId,
@@ -563,7 +563,7 @@ export default class PluginSample extends Plugin {
                 dialog.destroy();
 
                 // 等待执行完毕，弹出刷新对话框
-                var intervalId = setInterval( () => 
+                var intervalId:any = setInterval( () => 
                 this.continueCheckFile(
                     `${this.appDir}/stage/build/app/.index.html`,
                     intervalId,

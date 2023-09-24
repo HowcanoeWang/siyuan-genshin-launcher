@@ -19,7 +19,7 @@ export async function unzipPaimon() {
     return await res.json();
 }
 
-export async function prepareWaifuModel(){
+export async function preparePaimonModel(){
     // unzip if model not exists
     const fs = (window as any).require('fs');
     
@@ -31,36 +31,35 @@ export async function prepareWaifuModel(){
 }
 
 export async function loadWaifuJs() {
-    // 添加<script>
-    // <script src="dist/live2d_bundle.js"></script>
-    // <script async type="module" src="waifu-tips.js"></script>
-    const live2d_bundle_js = document.createElement('script');
-    live2d_bundle_js.src = `./plugins/${pname}/l2d/live2d_bundle.js`;
-    live2d_bundle_js.async = true;
-    document.body.appendChild(live2d_bundle_js);
+    let live2d_bundle_js = document.getElementById('l2dbundlejs');
 
-    const waifu_tips_js = document.createElement('script');
-    waifu_tips_js.src = `./plugins/${pname}/l2d/waifu-tips.js`;
-    waifu_tips_js.type = 'module';
-    waifu_tips_js.async = true;
-    // waifu_tips_js.defer = true;
-    document.body.appendChild(waifu_tips_js);      
+    // jsript 不存在，则添加
+    if (!live2d_bundle_js) {
+        // 添加<script>
+        // <script src="dist/live2d_bundle.js"></script>
+        // <script async type="module" src="waifu-tips.js"></script>
+        const live2d_bundle_js = document.createElement('script');
+        live2d_bundle_js.src = `./plugins/${pname}/l2d/live2d_bundle.js`;
+        live2d_bundle_js.async = true;
+        live2d_bundle_js.id = "l2dbundlejs";
+        document.body.appendChild(live2d_bundle_js);
+
+        const waifu_tips_js = document.createElement('script');
+        waifu_tips_js.src = `./plugins/${pname}/l2d/waifu-tips.js`;
+        waifu_tips_js.type = 'module';
+        waifu_tips_js.async = true;
+        waifu_tips_js.id = 'l2dtipsjs'
+        // waifu_tips_js.defer = true;
+        document.body.appendChild(waifu_tips_js);      
+    }
 }
 
-export function addWaifuElement(hide:boolean=false) {
+export function addWaifuElement() {
     const waifuElement = document.createElement('div');
     waifuElement.id = "waifu";
     // 允许鼠标透过，传递点击事件
     waifuElement.style.setProperty('pointer-events', "none");
     waifuElement.style.setProperty('position', "fixed");
-    if (hide) {
-        debug(`[waifu.ts][addWaifuElement] Adding hide to Waifu Element`);
-        waifuElement.classList.add('hide');
-        // sync to waifu.js setting
-        sessionStorage.setItem('waifuHide', Number(hide).toString());
-    } else {
-        window.waifuAlreayInited = true;
-    }
 
     const waifuInnerHTML = `
         <div id="waifu-message" style="max-width:250px;overflow-wrap: break-word"></div>
@@ -80,6 +79,8 @@ export function addWaifuElement(hide:boolean=false) {
     waifuElement.innerHTML = waifuInnerHTML;
 
     document.body.appendChild(waifuElement);
+
+    window.waifuAlreayInited = true;
 }
 
 export function initWaifuElement() {
@@ -89,7 +90,7 @@ export function initWaifuElement() {
     debug(`[waifu.ts][initWaifuElement] config[waifuHide]=${configs.get('waifuHide')}, after reading got waifuStatus=${waifuStatus}`);
 
     if (!waifuStatus) {
-        addWaifuElement(waifuStatus);
+        addWaifuElement();
         loadWaifuJs();
         allowClickPass();
     }
@@ -135,31 +136,44 @@ export function allowClickPass() {
 
 export async function setWaifuHide(status:boolean) {
     configs.set('waifuHide', status)
-    sessionStorage.setItem('waifuHide', Number(status).toString());
     
-    debug(`[waifu.ts][setWaifuHide] set SettingStorage["waifuHide"] = ${status}; set sessionStorage['waifuHide] = ${Number(status).toString()}`)
+    debug(`[waifu.ts][setWaifuHide] set SettingStorage["waifuHide"] = ${status}`)
     
     let waifuElement = document.getElementById('waifu');
 
+    await configs.save(`[waifu.ts][setWaifuHide][waifuHide.change]`);
+
     if (waifuElement) {
         // 已经加载过
+
+        /** 
+         * 删除掉<div id='waifu'>元素之后再重新加载同样的元素
+         * 语音ok但是canvas似乎没有渲染，initmodel也无法渲染canvas，
+         * 但是拍照window.live2dv4.CaptureCanvas()能拍出来，
+         * 疑似为webgl只能绑定一个canvas，新建的canvas无法匹配上。
+         * 所以最简单的解决方法是，不考虑性能损失直接屏蔽掉那个元素，来实现隐藏
+         */
         if (status) {
-            waifuElement.classList.add('hide');
+            waifuElement.style.setProperty('display', 'none');
+            waifuElement.style.setProperty('visibility', 'false');
         } else {
-            waifuElement.classList.remove('hide');
-            // 如果一开始启动的时候addWaifuElement(hide=true)
-            //    模型不显示，则需要重新初始化
-            // 已经初始化过了的，就不需要了再重载一遍了
-            if (!window.waifuAlreayInited) {
-                window.initModel();
-            }
+            waifuElement.style.setProperty('display', 'block');
+            waifuElement.style.setProperty('visibility', 'true');
         }
     } else {
         // 完全没加载过
-        addWaifuElement(status);
+
+        /** 
+         * 目的：
+         * 当settings的设置为不显示派蒙看板娘时
+         * 初始化的时候完全不加载看板娘相关的代码
+         * 而不是加载之后再隐藏，造成潜在的性能消耗
+         * 只有当用户手动修改了设置，出发了这个函数
+         * 才把看板娘加载出来
+         */
+        addWaifuElement();
         loadWaifuJs();
         allowClickPass();
     }
 
-    await configs.save(`[waifu.ts][setWaifuHide][waifuHide.change]`);
 }
