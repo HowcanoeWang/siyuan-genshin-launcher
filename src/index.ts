@@ -84,6 +84,8 @@ export default class PluginSample extends Plugin {
         // var userProfilePath = process.env.USERPROFILE;
         // userProfilePath  = userProfilePath .replaceAll('\\', '/');
         // this.execudeCMD(`Remove-Item -Path '${userProfilePath}/AppData/Local/Microsoft/Windows/Explorer/iconcache_*.db' -Force;`)
+
+        // this.execudeCMD(`powershell ${this.dataDir}/plugins/${pname}/source/changeDesktopIcon.ps1 -icoPath ${this.dataDir}/plugins/${pname}/source/iconWin.ico`);
     }
 
     onunload() {
@@ -282,7 +284,7 @@ export default class PluginSample extends Plugin {
         return `${ceiExeFile} '${icoFile}' '${siyuanExeFile}' '${siyuanExeChangedFile}'`
     }
 
-    public async execudeCMD(cmdStr:string){
+    public async execudeCMD(cmdStr:string, isFile:boolean=false){
         // const demoCMD = "cp 'C:\\Users\\hwang\\Desktop\\aaa.bmp' 'C:\\Program Files\\SiYuan\\resources\\aaa.bmp'"
         const spawn = (window as any).require('child_process').spawn;
 
@@ -298,12 +300,18 @@ export default class PluginSample extends Plugin {
         var spawn_param:{};
 
         if (this.os === 'windows') {
-            spawn_cmd = `Start-Process powershell.exe -Verb runAs -ArgumentList \"-NoExit -Command ${cmdStr}\"`;
+            if (isFile) {
+                spawn_cmd = `Start-Process powershell.exe -Verb runAs -ArgumentList "-NoExit", "-File", "${cmdStr}"`;
+            } else {
+                spawn_cmd = `Start-Process powershell.exe -Verb runAs -ArgumentList "-NoExit", "-Command", "${cmdStr}"`;
+            }
             spawn_param = {shell:"powershell.exe"};
         } else {
             spawn_cmd = cmdStr;
             spawn_param = {shell: true};
         }
+
+        debug(`[index.ts][execudeCMD]: `, spawn_cmd)
 
         const child = spawn(spawn_cmd, spawn_param, 
             (error: any, stdout: any, stderr: any) => {
@@ -500,6 +508,12 @@ export default class PluginSample extends Plugin {
                 const clearCacheStr = this.clearWinCache();
 
                 finCmdStr += winChangeExeStr + ` ${spara} ` + clearCacheStr;
+
+                // replace desktop icon by powershell file
+                finCmdStr += `powershell -File ${this.dataDir}/plugins/${pname}/source/changeDesktopIcon.ps1 -icoPath '${this.dataDir}/plugins/${pname}/source/iconWin.ico'`
+
+                // notice finish
+                finCmdStr += ` ${spara} ` + `Write-Output '${this.i18n.batchDone}';`;
             }
 
             debug(`[index.ts][openSetting] final execude cmd ${finCmdStr}`);
@@ -546,6 +560,13 @@ export default class PluginSample extends Plugin {
                 const clearCacheStr = this.clearWinCache();
 
                 finCmdStr += clearCacheStr;
+
+                // replace desktop icon by powershell file
+                const originalExe = this.appDir.replace('/resources', '/') + 'SiYuan.exe'
+                finCmdStr += `powershell -File ${this.dataDir}/plugins/${pname}/source/changeDesktopIcon.ps1 -icoPath '${originalExe}'`
+
+                // notice finish
+                finCmdStr += ` ${spara} ` + `Write-Output '${this.i18n.batchDone}';`;
             }
 
             info(`[index.ts][openSetting] click recover btn, execute the following command: ${finCmdStr}`);

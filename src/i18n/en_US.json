@@ -25,5 +25,6 @@
   "inDevModeLabel": "Developer mode",
   "inDevModeDes": "Show more logs when open (debug log for waifu need refresh the siyuan note)",
   "batchTitle": "Execute",
-  "batchDes": "Will execute the following commands, please confirm\n\n"
+  "batchDes": "Will execute the following commands, please confirm\n\n",
+  "batchDone": "Finish executing, your can close this window"
 }
