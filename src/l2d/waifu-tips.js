@@ -582,7 +582,7 @@ const waifuStyle = `
 ${live2d_settings.waifuEdgeSide}px;
 position:fixed;
 bottom:0;
-z-index:998;
+z-index:11;
 font-size:0
 }
 
@@ -594,7 +594,7 @@ height:auto;
 left:2rem;
 top:20px;
 opacity:0;
-z-index:998;
+z-index:11;
 margin:auto;
 padding:5px 10px;
 border:1px solid rgba(104,216,255,0.62);
@@ -619,7 +619,7 @@ color:#7500b7;
 #live2d2,#live2d4 {
 position:relative;
 display:none;
-z-index:997
+z-index:10
 }
 
 .waifu-tool {
@@ -628,7 +628,7 @@ color:#d73b66;
 top:130px;
 ${live2d_settings.waifuEdgeSide.split(":")[0]}:10px;
 position:absolute;
-z-index:998
+z-index:11
 }
 
 #waifu:hover > .waifu-tool {
@@ -664,4 +664,5 @@ if (window.live2dv4 === undefined) {
 window.downloadCap = blobDownload;
 window.initModel = initModel;
 window.live2d_settings = live2d_settings;
+window.showPaimonMessage = showMessage;
 export {showMessage, initModel}
