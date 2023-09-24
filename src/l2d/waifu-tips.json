@@ -46,39 +46,8 @@
             "selector": ".waifu-tool>.icon-home",
             "text": ["点击这里前往首页哦~"]
         }, {
-            "selector": ".waifu-tool>.icon-message",
-            "text": ["一言一语，一颦一笑。一字一句，一颗赛艇。"]
-        }, {
-            "selector": ".waifu-tool>.icon-next",
-            "text": ["嗯··· 要切换 看板娘 吗？"]
-        }, {
-            "selector": ".waifu-tool>.icon-camera",
-            "text": ["要拍张纪念照片吗？"]
-        }, {
-            "selector": ".waifu-tool>.icon-about",
-            "text": ["这里有关于我的信息呢"]
-        }, {
-            "selector": ".waifu-tool>.icon-cross",
-            "text": ["舰长补给全保底，舰长副本零掉落"]
-        }, {
-            "selector": ".waifu-tool>.icon-volumeup",
-            "text": ["听不清音乐吗？"]
-        }, {
-        }, {
-            "selector": ".protyle-gutters",
-            "text": ["这个是段落设置按钮哦"]
-        }, {
-            "selector": ".waifu-tool>.icon-volumedown",
-            "text": ["音乐声太大了吗？"]
-        }, {
             "selector": "#floating-toc-btn",
             "text": ["翻页比较麻烦吗，点击可以显示这篇文章的目录呢"]
-        }, {
-            "selector": "#searchIcon",
-            "text": ["找不到想看的内容？搜索看看吧"]
-        }, {
-            "selector": "#backTop",
-            "text": ["回到开始的地方吧"]
         }, {
             "selector": ".mute",
             "text": ["点这里可以静音哦"]
@@ -90,52 +59,28 @@
             "text": ["去下一页看看吧"]
         }, {
             "selector": "#comment",
-            "text": ["想要去评论些什么吗？"]
-        }, {
-            "selector": "#comment",
-            "text": ["深夜时要爱护眼睛呀"]
-        }, {
-            "selector": "#comment",
-            "text": ["手机扫一下就能继续看，很方便呢"]
-        }, {
-            "selector": "#comment",
-            "text": ["要吐槽些什么呢"]
-        }, {
-            "selector": "#comment",
-            "text": ["该怎么称呼你呢"]
-        }, {
-            "selector": "#comment",
-            "text": ["留下你的邮箱，不然就是无头像人士了"]
-        }, {
-            "selector": "#comment",
-            "text": ["你的家在哪里呢，好让我去参观参观"]
-        }, {
-            "selector": "#comment",
-            "text": ["认真填写哦，垃圾评论是禁止事项"]
-        }, {
-            "selector": "#comment",
-            "text": ["要插入一个表情吗"]
-        }, {
-            "selector": "#comment",
-            "text": ["要[提交]^(Commit)了吗，首次评论需要审核，请耐心等待~"]
-        }, {
-            "selector": "#comment",
-            "text": ["点击图片可以放大呢"]
-        }, {
-            "selector": "#comment",
-            "text": ["这里是菜单"]
-        }, {
-            "selector": "#comment",
-            "text": ["在这里可以调整<span style=\"color:DarkBlue;\">播放进度</span>呢"]
-        }, {
-            "selector": "#comment",
             "text": ["在这里可以调整<span style=\"color:DarkBlue;\">音量</span>呢"]
         }, {
             "selector": "#comment",
             "text": ["<span style=\"color:DarkBlue;\">播放列表</span>里都有什么呢"]
         }, {
-            "selector": "#comment",
-            "text": ["有<span style=\"color:DarkBlue;\">歌词</span>的话就能跟着一起唱呢"]
+            "selector": ".protyle-gutters",
+            "text": ["点这个可以呼出块设置菜单哦"]
+        }, {
+            "selector": ".protyle-action",
+            "text": ["点这个可以进入聚焦模式哦"]
+        }, {
+            "selector": ".protyle-scroll",
+            "text": ["东西太多了，要滚动页面吗"]
+        }, {
+            "selector": ".protyle-scroll__up",
+            "text": ["跳转到开头看看吧"]
+        }, {
+            "selector": ".protyle-scroll__down",
+            "text": ["跳转到末尾看看吧"]
+        }, {
+            "selector": ".protyle-util",
+            "text": ["要备注些什么呢"]
         }, {
             "selector": "#live2d2,#live2d4",
             "text": [
