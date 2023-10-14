@@ -2,9 +2,9 @@
   "name": "siyuan-genshin-launcher",
   "author": "HowcanoeWang",
   "url": "https://github.com/HowcanoeWang/siyuan-genshin-launcher",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "minAppVersion": "2.10.2",
-  "backends": ["windows", "darwin"],
+  "backends": ["windows", "darwin", "linux"],
   "frontends": ["desktop"],
   "displayName": {
     "default": "Genshin launcher",

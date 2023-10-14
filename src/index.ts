@@ -81,6 +81,8 @@ export default class PluginSample extends Plugin {
             }, 3000);
         }
 
+        this.modifyHtmlMeta(this.mvKeys[2], this.appDir + `/stage/build/app/`) // mvKeys2 -> build_app_index.html
+
         // var userProfilePath = process.env.USERPROFILE;
         // userProfilePath  = userProfilePath .replaceAll('\\', '/');
         // this.execudeCMD(`Remove-Item -Path '${userProfilePath}/AppData/Local/Microsoft/Windows/Explorer/iconcache_*.db' -Force;`)
@@ -158,6 +160,35 @@ export default class PluginSample extends Plugin {
         }
 
         return tagVersion;
+    }
+
+    public modifyHtmlMeta(filePath: string, newPath: string) {
+        debug(`[index.ts][modifyHtmlMeta] toModify html path: ${filePath}, the <meta path="${newPath}"`);
+        try {
+            // 读取 HTML 文件内容
+            let html = fs.readFileSync(filePath, 'utf-8');
+
+            const metaTagRegex = /(meta\s+name="siyuan-genshin-launcher"\s+[^]*path=")([^"]*)("[^>]*>)/
+            const match = html.match(metaTagRegex);
+            /** build_app_index.html => '<meta name="siyuan-genshin-launcher" content="4.1.0" path="C:/Program Files/SiYuan/resources/stage/build/app/">'
+             *  match => 
+             *  0: "meta name=\"siyuan-genshin-launcher\" content=\"4.1.0\" path=\"C:/Program Files/SiYuan/resources/stage/build/app/\">"
+                1: "meta name=\"siyuan-genshin-launcher\" content=\"4.1.0\" path=\""
+                2: "C:/Program Files/SiYuan/resources/stage/build/app/"
+                3: "\">"
+             */
+         
+            // 使用正则表达式，匹配  标签中的 <meta/> 标签，并替换其中的 path 属性值
+            html = html.replace(match[2], newPath);
+
+            debug('[index.ts][modifyHtmlMeta] saved html:\n', html);
+        
+            // 将修改后的 HTML 内容写回到文件中
+            fs.writeFileSync(filePath, html, 'utf-8');
+            debug('[index.ts][modifyHtmlMeta] HTML 文件已成功更新');
+          } catch (error) {
+            debug('[index.ts][modifyHtmlMeta] 更新 HTML 文件时出现错误：', error);
+          }
     }
 
     public hasBackupFiles(renameFiles: {[x: string]: string[];}) {

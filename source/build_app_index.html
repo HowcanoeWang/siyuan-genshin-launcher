@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="siyuan-genshin-launcher" content="4.1.0">
+    <meta name="siyuan-genshin-launcher" content="4.1.1" path="C:/Program Files/SiYuan/resources/stage/build/app/">
     <style id="editorFontSize"></style>
     <style id="editorAttr"></style>
     <style>
@@ -20,23 +20,20 @@
 
         const platform = navigator.platform.toLowerCase();
 
-        var scanDir = '';
-
-        if (platform.includes('win')) {
-            scanDir = './resources/stage/build/app/';
-        } else if (platform.includes('mac')) {
-            scanDir = '/Applications/SiYuan.app/Contents/Resources/stage/build/app/';
-        } else {
-            console.log('unknown OS')
-        }
+        var scanDir = document.head.querySelectorAll("[name='siyuan-genshin-launcher']")[0].getAttribute('path')
 
         function fsReadDir(scanDir) {
             fs.readdir(scanDir, (err, files) => {
                 if (err) {
-                    console.warn(`[Genshin Plugin][build/app/index.html] Catch up the error ${err}, this is caused by windows parse './' relative path to abs path 'C:/windows/system32/', try to use abspath 'C:/Program Files/SiYuan/resources/stage/build/app/' instead`);
-                    // windows starts, './' parse to 'C:/windows/system32/'
-                    if (scanDir === './resources/stage/build/app/') {
-                        fsReadDir('C:/Program Files/SiYuan/resources/stage/build/app/')
+                    console.warn(`[Genshin Plugin][build/app/index.html] Catch up the error ${err}, the path ${scanDir} may not exists, try to use default path`);
+                    if (platform.includes('win')) {
+                        fsReadDir('C:/Program Files/SiYuan/resources/stage/build/app/');
+                    }
+                    if (platform.includes('mac')) {
+                        fsReadDir('/Applications/SiYuan.app/Contents/Resources/stage/build/app/');
+                    }
+                    if (platform.includes('linux')) {
+                        fsReadDir('/usr/lib/siyuan-note/stage/build/app/');  // aur source
                     }
                 } else {
                     // console.log(files);
