@@ -116,12 +116,12 @@ export default class PluginSample extends Plugin {
                 [`${this.appDir}/stage/auth.html`],
             [`${this.dataDir}/plugins/${pname}/source/build_app_index.html`]:
                 [`${this.appDir}/stage/build/app/index.html`],
-            [`${this.dataDir}/plugins/${pname}/source/icon.png`]: 
+            [`${this.dataDir}/plugins/${pname}/source/syhin_logo.png`]: 
                 [`${this.appDir}/appearance/boot/icon.png`,
-                 `${this.appDir}/app/electron/icon.png`,
-                 `${this.appDir}/stage/icon.png`,
-                 `${this.appDir}/stage/icon-large.png`
-                ],
+                 `${this.appDir}/app/electron/icon.png`,],
+            [`${this.dataDir}/plugins/${pname}/source/icon.png`]: 
+                [`${this.appDir}/stage/icon.png`,
+                 `${this.appDir}/stage/icon-large.png`],
             [`${this.dataDir}/plugins/${pname}/source/loading.svg`]: 
                 [`${this.appDir}/stage/loading.svg`],
             [`${this.dataDir}/plugins/${pname}/source/loading-pure.svg`]: 
