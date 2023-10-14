@@ -8,6 +8,7 @@
   "replaceBtn": "替换",
   "replaceBtnText": "已替换",
   "replaceBtnUpdate": "更新",
+  "replaceBtnTextAppImageTitle": "无法替换AppImage，请使用tar.gz安装包",
   "recoverTitle": "还原系统文件",
   "recoverSubtitle": "将启动界面还原为默认",
   "recoverBtn": "还原",

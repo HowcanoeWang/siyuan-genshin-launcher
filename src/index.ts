@@ -406,7 +406,7 @@ export default class PluginSample extends Plugin {
 <label class="b3-label fn__flex config__item">
    <div class="fn__flex-1">
         ${this.i18n.replaceTitle}
-        <div class="b3-label__text">${this.i18n.replaceSubtitle} ${getBackend()==='windows'? "<span class='ft__error'>"+this.i18n.requireAdmin+"</span>": ''}</div>
+        <div id="replaceNotice" class="b3-label__text">${this.i18n.replaceSubtitle} ${getBackend()==='windows'? "<span class='ft__error'>"+this.i18n.requireAdmin+"</span>": ''}</div>
     </div>
     <span class="fn__space"></span>
     <button class="b3-button b3-button--outline fn__flex-center fn__size200" id="replaceBtn">
@@ -468,6 +468,7 @@ export default class PluginSample extends Plugin {
         debug(`[index.ts][openSetting] pluginHtmlVersion=${pluginHtmlVersion}, appHtmlVersion=${appHtmlVersion}`)
 
         const replaceBtnElement = document.getElementById('replaceBtn') as HTMLButtonElement;
+        const replaceNoticeElement = document.getElementById('replaceNotice') as HTMLDivElement;
         const recoverBtnElement = document.getElementById('recoverBtn') as HTMLButtonElement;
 
         if (!appHtmlVersion) {
@@ -488,6 +489,14 @@ export default class PluginSample extends Plugin {
             replaceBtnElement.textContent = this.i18n.replaceBtnText;
         }
 
+        // 检查是否为linux下的AppImage思源
+        if (this.os === 'linux' && this.appDir.includes('tmp/')) {
+            replaceBtnElement.disabled = true;
+            replaceBtnElement.title = this.i18n.replaceBtnTextAppImageTitle;
+            replaceNoticeElement.innerHTML += `<span class='ft__error'>${this.i18n.replaceBtnTextAppImageTitle}</span>`
+        }
+
+        // 恢复按钮
         if (hasFullBackup) {
             recoverBtnElement.disabled = false;
             recoverBtnElement.title = '';

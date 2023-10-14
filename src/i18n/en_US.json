@@ -8,6 +8,7 @@
   "replaceBtn": "Replace", 
   "replaceBtnText": "Replaced", 
   "replaceBtnUpdate": "Update",
+  "replaceBtnTextAppImageTitle": "Not Applicatable to AppImage, please use tar.gz installer",
   "recoverTitle": "Restore System Files", 
   "recoverSubtitle": "Restore the startup interface to SiYuan default", 
   "recoverBtn": "Restore", 
