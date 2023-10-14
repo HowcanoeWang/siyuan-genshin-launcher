@@ -74,6 +74,7 @@ export default class PluginSample extends Plugin {
         //     waifu.initWaifuElement();
         // }, 5000);
         waifu.initWaifuElement();
+        waifu.hoverTransparent(configs.get('waifuTrans'));
 
         if (!hasFullBackup || appHtmlVersion < pluginHtmlVersion) {
             setTimeout(() => {
@@ -439,20 +440,28 @@ export default class PluginSample extends Plugin {
     <span class="fn__space"></span>
     <input class="b3-switch fn__flex-center" id="waifuMute" type="checkbox">
 </label>
-<label class="fn__flex b3-label config__item">
-<div class="fn__flex-1">
-    ${this.i18n.inDevModeLabel}
-    <div class="b3-label__text">
-        ${this.i18n.inDevModeDes}
+<label class="fn__flex b3-label">
+    <div class="fn__flex-1">
+        ${this.i18n.transWaifu}
+        <div class="b3-label__text">${this.i18n.transWaifuDes}</div>
     </div>
-</div>
-<span class="fn__flex-center" />
-<input
-    id="devModeInput"
-    class="b3-switch fn__flex-center"
-    type="checkbox"
-    value="${configs.get('inDev')}"
-/>
+    <span class="fn__space"></span>
+    <input class="b3-switch fn__flex-center" id="waifuTrans" type="checkbox">
+</label>
+<label class="fn__flex b3-label config__item">
+    <div class="fn__flex-1">
+        ${this.i18n.inDevModeLabel}
+        <div class="b3-label__text">
+            ${this.i18n.inDevModeDes}
+        </div>
+    </div>
+    <span class="fn__flex-center" />
+    <input
+        id="devModeInput"
+        class="b3-switch fn__flex-center"
+        type="checkbox"
+        value="${configs.get('inDev')}"
+    />
 </label>
 `,
             width: this.isMobile ? "92vw" : "800px",
@@ -660,7 +669,7 @@ export default class PluginSample extends Plugin {
         let waifuMute = configs.get('waifuMute');
         waifuMuteElement.checked = waifuMute;
 
-        debug(`[index.ts][openSetting] config['waifuMute'] = ${configs.get('waifuMute')}; get waifuMute = ${waifuMute}; window.waifuMute = ${window.waifuMute};`)
+        debug(`[index.ts][openSetting] config['waifuMute'] = ${configs.get('waifuMute')}; get waifuMute = ${waifuMute};`)
 
         waifuMuteElement.addEventListener('click', async () => {
             waifuMute = !waifuMute;
@@ -669,6 +678,24 @@ export default class PluginSample extends Plugin {
 
             configs.set('waifuMute', waifuMute);
             await configs.save(`[index][openSetting][waifuMute.change]`);
+        })
+
+        // 看板娘半透明设置
+        const waifuTransElement = document.getElementById('waifuTrans') as HTMLInputElement;
+
+        let waifuTrans = configs.get('waifuTrans');
+        waifuTransElement.checked = waifuTrans;
+
+        debug(`[index.ts][openSetting] config['waifuTrans'] = ${configs.get('waifuTrans')}; get waifuTrans = ${waifuTrans};`)
+
+        waifuTransElement.addEventListener('click', async () => {
+            waifuTrans = !waifuTrans;
+            waifuTransElement.checked = waifuTrans;
+
+            configs.set('waifuTrans', waifuTrans);
+            await configs.save(`[index][openSetting][waifuTrans.change]`);
+
+            waifu.hoverTransparent(waifuTrans);
         })
 
         // 开发者模式

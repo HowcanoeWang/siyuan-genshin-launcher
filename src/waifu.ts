@@ -132,6 +132,35 @@ export function allowClickPass() {
             canvas.dispatchEvent(clickEvent);
         }
     });
+
+}
+
+export function mouseoverHandler(event: { clientX: number; clientY: number; }) {
+    var canvas = document.getElementById("live2d4") as HTMLCanvasElement;
+    var waifuElement = document.getElementById('waifu') as HTMLDivElement;
+    
+    var rect = canvas.getBoundingClientRect();
+
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+
+    if (x >=0 && y >= 0 && x < canvas.width && y < canvas.height) {
+        waifuElement.style.setProperty('opacity', '0.5');
+    } else {
+        waifuElement.style.setProperty('opacity', '1');
+    }
+}
+
+export function hoverTransparent(waifuTrans:boolean) {
+    var canvas = document.getElementById("live2d4") as HTMLCanvasElement;
+
+    if (waifuTrans && canvas) {
+        document.addEventListener("mouseover", mouseoverHandler);
+        info(`[waifu.ts][hoverTransparent] activate waifu transparent, ${waifuTrans}`)
+    } else {
+        document.removeEventListener("mouseover", mouseoverHandler);
+        info(`[waifu.ts][hoverTransparent] deactivate waifu transparent, ${waifuTrans}`)
+    }
 }
 
 export async function setWaifuHide(status:boolean) {

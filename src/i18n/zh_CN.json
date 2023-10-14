@@ -27,5 +27,7 @@
   "inDevModeDes": "开启后将显示更多日志输出(看板娘debug日志需要刷新页面生效)",
   "batchTitle": "批处理",
   "batchDes": "将会执行下述脚本，请确认\n\n",
-  "batchDone": "运行结束，你可以关闭此窗口"
+  "batchDone": "运行结束，你可以关闭此窗口",
+  "transWaifu": "悬浮半透明",
+  "transWaifuDes": "鼠标悬浮修改为半透明，方便看清楚下面的笔记内容"
 }
