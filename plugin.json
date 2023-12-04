@@ -2,7 +2,7 @@
   "name": "siyuan-genshin-launcher",
   "author": "HowcanoeWang",
   "url": "https://github.com/HowcanoeWang/siyuan-genshin-launcher",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "minAppVersion": "2.10.2",
   "backends": ["windows", "darwin", "linux"],
   "frontends": ["desktop"],
@@ -24,5 +24,8 @@
     "patreon": "",
     "github": "",
     "custom": []
-  }
+  },
+  "keywords": [
+    "美化", "Beautify", "原神", "Genshin", "看板娘", "Waifu"
+  ]
 }

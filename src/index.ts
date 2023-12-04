@@ -595,8 +595,6 @@ export default class PluginSample extends Plugin {
                 // mute the sound of waifu
                 window.waifuMute = true;
                 configs.set('waifuMute', true);
-                // show waifu
-                await waifu.setWaifuHide(false);
             })
             
         })
@@ -646,7 +644,7 @@ export default class PluginSample extends Plugin {
                 1000);
 
                 // close waifu
-                await waifu.setWaifuHide(true);
+                // await waifu.setWaifuHide(true);
             })
 
         })
@@ -661,6 +659,13 @@ export default class PluginSample extends Plugin {
             waifuStatus = !waifuStatus;
             waifuHideElement.checked = waifuStatus;
             await waifu.setWaifuHide(waifuStatus);
+
+            if ( waifuHideElement.checked ) {
+                confirm(this.i18n.hideWaifuRefreshTitle, this.i18n.hideWaifuRefreshDes, ()=>{
+                    window.location.reload();
+                })
+            }
+
         })
 
         // 看板娘静音设置

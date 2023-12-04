@@ -37,10 +37,13 @@ English | [简体中文](https://github.com/HowcanoeWang/siyuan-genshin-launcher
 * Light and dark mode change according to local time (6:00 to 18:00 as light mode), following Genshin's logic rather than SiYuan's mode setting.
 * The plugin also has the capability to automatically replace the application icon.    
   However, on Mac, due to icon caching, the changes may not take effect immediately and even after restart.     
-  Please manually replace the icon by the following step:    
-  <img src="https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher@main/imgs/macIconReplace.png">    
+  <details>
+    <summary>Please manually replace the icon by the following step (click to open image tuturials): </summary>   
+    <img src="https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher@main/imgs/macIconReplace.png">
+  </details>
   Image Translation: Applications -> SiYuan.app -> (1) Get Info  (2) Show package contents -> Drag icon from package contents to icon area in info panel.
-* The Paimon Assistant function is only for temporary use, and there are **NO** plans to provide more advanced customization options such as moving position or changing models. Please look forward to the updates of the Waifu plugin for more comprehensive features.
+* The Paimon Assistant function is only for temporary use, and there are <b style='color:red'>NO**</b> plans to provide more advanced customization options such as moving position or changing models. Please look forward to the updates of the Waifu plugin for more comprehensive features.    
+  <b style='color:red'>Rendering the Paimon is very comutation intensive, not recommended using on low performance computer or with battery</b>
 
 # References
 

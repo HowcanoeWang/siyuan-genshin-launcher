@@ -30,15 +30,18 @@
   * Linux端仅支持`tar.gz`解压安装。   
     * AppImage每次运行都在临时文件夹内，故替换后重启不起效；   
     * 使用包管理器(apt-get, AUR)安装的，往往权限不足无法替换文件。
-  * 安卓端的傻\*文件权限管理直接锁死了这条技术路线。
+  * 安卓11以上版本的傻\*文件权限管理直接锁死了这条技术路线。
 * 重装思源可以解决因这个插件引起的所有问题。但是重装后需要重新替换。
 * 记得在 `设置`-`关于`-`访问授权码`，开启锁屏功能来得到更好的体验。
   * 锁屏页面是有背景音乐的，但是Chrome安全权限要求需要手动点击才能触发播放。
 * 明亮和黑暗模式根据当前时间变化(6点-18点为明亮主题)，遵循原神的模式而非思源的明亮和黑暗模式设置。
 * 该插件支持自动替换应用图标    
-  MacOS由于图标缓存，有时即使重启电脑也不生效。建议手动替换图标：   
-  <img src="https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher@main/imgs/macIconReplace.png">
-* 看板娘功能仅为临时使用，**不准备**提供更深度的功能定制如移动位置、更换模型等，更完善的功能请期待看板娘插件的更新。
+  <details>
+    <summary>MacOS由于图标缓存，有时即使重启电脑也不生效。建议手动替换图标 (点击展开图片教程)：</summary>   
+    <img src="https://cdn.jsdelivr.net/gh/HowcanoeWang/siyuan-genshin-launcher@main/imgs/macIconReplace.png">
+  </details>
+* 看板娘功能仅为临时使用，<b style='color:red'>不准备</b>提供更深度的功能定制如移动位置、更换模型等，更完善的功能请期待看板娘插件的更新。    
+  <b style='color:red'>看板娘的渲染非常吃性能，不建议在低性能本或离电使用时开启</b>
   
 
 # 参考资料
